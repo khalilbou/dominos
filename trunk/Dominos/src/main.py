@@ -18,8 +18,8 @@ from Tile import *
 
 #------------------Constants----------------------
 main_window_resolution = (800,600)
-light_green = (0,200,15)
-dark_green = (0,140,15)
+inner_color = (255,242,206)
+outer_color = (255,224,186)
 
 #-------------------Variables--------------------------
 __PASS__ = 0
@@ -37,13 +37,14 @@ def generate_tiles():
     """ generate_tiles()
         this function takes nothing and returns a complete dominos list of 28 elements
     each element of this list is a "tuple".
-    examples :-
-    
-    >>> x=generate_newgametiles()
-    >>> print x
-    [(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (2, 2), (2, 3), (2, 4), (2, 5), (2, 6), (3, 3), (3, 4), (3, 5), (3, 6), (4, 4), (4, 5), (4, 6), (5, 5), (5, 6), (6, 6)]
     """
-    return [(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (2, 2), (2, 3), (2, 4), (2, 5), (2, 6), (3, 3), (3, 4), (3, 5), (3, 6), (4, 4), (4, 5), (4, 6), (5, 5), (5, 6), (6, 6)]
+    
+    return [(0, 0), (0, 1), (0, 2), (0, 3), (0, 4),\
+            (0, 5), (0, 6), (1, 1), (1, 2), (1, 3),\
+            (1, 4), (1, 5), (1, 6), (2, 2), (2, 3),\
+            (2, 4), (2, 5), (2, 6), (3, 3), (3, 4),\
+            (3, 5), (3, 6), (4, 4), (4, 5), (4, 6),\
+            (5, 5), (5, 6), (6, 6)]
 
 #----------------------------------------------------------------------------
 
@@ -54,13 +55,13 @@ def draw_rectangles(screen):
         and returns that display
     """
     
-    screen.fill(dark_green)
+    screen.fill(outer_color)
     
     center_rectangle_start = (0, main_window_resolution[1]/4)
     center_rectangle_size = (main_window_resolution[0], main_window_resolution[1]/2)
     center_rectangle = Rect(center_rectangle_start, center_rectangle_size)
     
-    pygame.draw.rect(screen, light_green, center_rectangle)
+    pygame.draw.rect(screen, inner_color, center_rectangle)
     
     pygame.display.update()
     
@@ -163,17 +164,7 @@ if __name__ == '__main__':
         
         
         
-#        event = pygame.event.wait()
-#        if event.type == QUIT:
-#            exit()
-#        elif event.type == MOUSEBUTTONDOWN :
-#            print "test"
-#            if event.pos[0] > 480 and event.pos[0] < 548 and event.pos[1] > 80 and event.pos[1] < 148 :
-#                print "hiiiii"
-        
-        
-        
-        
+
         
         #pygame.display.update()
         
