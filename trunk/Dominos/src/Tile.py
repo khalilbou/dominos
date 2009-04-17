@@ -19,6 +19,11 @@ class Tile(object):
 		self._square2 = pygame.image.load(image2_place)
 
 	def show_horizontal(self):
+		if self._number1 == 6 :
+			self._square1 = pygame.image.load("images/6r.png")
+		elif self._number2 == 6 :
+			self._square2 = pygame.image.load("images/6r.png")
+		
 		self._screen.blit(self._square1, (self._X,self._Y))
 		self._screen.blit(self._square2, ((self._X+34),self._Y))
 		pygame.display.flip()
