@@ -17,9 +17,9 @@ from computer import *
 from Tile import *
 
 #------------------Constants----------------------
-main_window_resolution = (1027, 768)
-inner_color = (255,242,206)
-outer_color = (255,224,186)
+main_window_resolution = (800, 600)
+outer_color = (140,95,22)
+bg_image = pygame.image.load("images/bg.png")
 
 #-------------------Variables--------------------------
 __PASS__ = 0
@@ -103,28 +103,20 @@ def initialize(screen):
         identifier += 1
 
 
-    #draw the rectangles and dominos tiles on the screen
-    draw_rectangles(screen)
+    #draw the background and dominos tiles on the screen
+    draw_bg(screen)
     draw_tiles(screen)
 
 #----------------------------------------------------------------------------
 
-def draw_rectangles(screen):
+def draw_bg(screen):
     """
     init_game()
         Initialize the game graphics by creating a new display
         and returns that display
     """
-
-    screen.fill(outer_color)
-
-    center_rectangle_start = (0, main_window_resolution[1]/4)
-    center_rectangle_size = (main_window_resolution[0], main_window_resolution[1]/2)
-    center_rectangle = Rect(center_rectangle_start, center_rectangle_size)
-
-    pygame.draw.rect(screen, inner_color, center_rectangle)
-
-    pygame.display.update()
+    screen.blit(bg_image,(0,0))
+    pygame.display.flip()
 
 #----------------------------------------------------------------------------
 
