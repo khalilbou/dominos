@@ -3,6 +3,7 @@
 Created on Apr 7, 2009
 
 @author: Mohamed Elemam
+    Modified by Abdelhamid Ibrahim , Abdalla Saeed
 '''
 
 #------------------IMPORTS------------------------
@@ -41,7 +42,6 @@ def generate_tiles():
         for j in range(i,7):
             temp.append((i,j))
     return temp
-
 #----------------------------------------------------------------------------
 
 def distribute_tiles(tiles_set, players_count):
@@ -50,6 +50,14 @@ def distribute_tiles(tiles_set, players_count):
         Takes a complete dominos list and returns a list of lists
         each list contains 7 tiles as Tuples.
         WARNING! "players_count" should be less than 4.
+        
+        in this function we faced type of lists called list of lists
+        for more clarify i will put example
+        >>> count = 3
+        >>> list = [[] for x in range(count)]
+        >>> print list
+        [[], [], []]
+        this list were contain 3 lists each list for one player :D
     """
     #check the validity of the number of players
     if players_count > 4 :
@@ -64,8 +72,6 @@ def distribute_tiles(tiles_set, players_count):
             random_number = randrange(0, len(tiles_set))
             # TODO (DONE) use the 'pop' method instead of the following active two lines            
             final_list[j].append(tiles_set.pop(random_number))
-#            final_list[j].append(tiles_set[random_number])
-#            del(tiles_set[random_number])
 
     return final_list
 
@@ -162,24 +168,44 @@ def tile_check(tile):
         Takes a tile as a tuple, and returns a tuple of (tile, position)
         which "tile" is the suitable tile, and position is "left"
         or "right" or None (if this is the first tile).
+        
+        syntax:
+        >>> [[(tilex,tiley),(posx,posy)],[(tilex,tiley),(posx,posy)],[(tilex,tiley),(posx,posy)]]
+        
+        example for last tile played on the right
+        >>> b=[[(1,11),(12,112)],[(2,22),(23,223)],[(3,33),(34,334)]]
+        >>> print b[-1][0][1]
+        33
+        represented the tiley (second_tile_value) for the last tile played on the right
+        
+        example for last tile played on the left
+        >>> print b[0][0][0]
+        1
+        represented the tilex (first_tile_value) for the last tile played on the left
     """
 
     #If this is the first tile to be played
     if len(PLAYED_TILES) == 0 :
         return tile, None
-
+    
     #check if the tile can be played on the right
     elif tile[0] == PLAYED_TILES[-1][0][1] :
         return tile, "right"
     elif tile[1] == PLAYED_TILES[-1][0][1] :
         return (tile[1], tile[0]), "right"
-
+    ###
+    #TODO:check if the tile will be curved in the down right
+    ###
+    
     #check if the tile can be played on the left
     elif tile[1] == PLAYED_TILES[0][0][0] :
         return tile, "left"
     elif tile[0] == PLAYED_TILES[0][0][0] :
         return (tile[1], tile[0]), "left"
-
+    ###
+    #check if the tile will be curved in the down left
+    ###
+    
     #If the tile isn't suitable
     else :
         return None
@@ -191,6 +217,23 @@ def play(tile, screen, place = None):
     play(tile, screen, place)
         this function takes a tile as a "tuple", display
         and a place ("left" or "right"). then draws the tile on the screen.
+        
+        example for the x_position to the last tile played on the left
+        >>> b=[[(1,11),(12,112)],[(2,22),(23,223)],[(3,33),(34,334)]]
+        >>> print b[0][1][0]
+        12
+        
+        example for the y_position to the last tile played on the left
+        >>> print b[0][1][1]
+        112
+        
+        example for the x_position to the last tile played on the right
+        >>> print b[-1][1][0]
+        34
+        
+        example for the y_position to the last tile played on the right
+        >>> print b[-1][1][1]
+        334 
     """
 
     #Initialize the place of the tile
@@ -303,6 +346,7 @@ def seticon(iconname):
         for j in range(0,32):
             icon.set_at((i,j), rawicon.get_at((i,j)))
     pygame.display.set_icon(icon)
+
 
 if __name__ == '__main__':
 
