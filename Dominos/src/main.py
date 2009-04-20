@@ -111,9 +111,8 @@ def initialize(screen):
 
 def draw_bg(screen):
     """
-    init_game()
-        Initialize the game graphics by creating a new display
-        and returns that display
+    draw_bg()
+        drawing the board background 
     """
     screen.blit(bg_image,(0,0))
     pygame.display.flip()
