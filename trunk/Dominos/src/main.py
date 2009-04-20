@@ -8,11 +8,9 @@ Created on Apr 7, 2009
 #------------------IMPORTS------------------------
 import pygame
 from pygame.locals import *
-
 from random import randrange
 from sys import exit
 from time import sleep
-
 from computer import *
 from Tile import *
 
@@ -37,7 +35,7 @@ def generate_tiles():
         this function takes nothing and returns a complete dominos list of 28 elements
     each element of this list is a "tuple".
     """
-
+    # TODO make two loops instead of this mess :D
     return [(0, 0), (0, 1), (0, 2), (0, 3), (0, 4),\
             (0, 5), (0, 6), (1, 1), (1, 2), (1, 3),\
             (1, 4), (1, 5), (1, 6), (2, 2), (2, 3),\
@@ -65,6 +63,9 @@ def distribute_tiles(tiles_set, players_count):
     for i in range(0, 7):
         for j in range(players_count):
             random_number = randrange(0, len(tiles_set))
+            # TODO use the 'pop' method instead of the following active two lines
+            # i think the following commented line is gonna make it
+            # TODO final_list[j].append(tiles_set.pop[random_number])
             final_list[j].append(tiles_set[random_number])
             del(tiles_set[random_number])
 
@@ -133,6 +134,7 @@ def draw_tiles(screen):
         temp_tile.show_vertical()
 
     #Print the Computer Tiles (up-side-down)
+    # TODO changing the Computer tiles image
     for i in range(len(COMPUTER_TILES)):
         current_position = COMPUTER_TILES[i][1]
         temp_tile = Tile(0, 0, screen, current_position[0], current_position[1])
@@ -185,7 +187,7 @@ def tile_check(tile):
         return None
 
 #----------------------------------------------------------------------------
-
+# TODO Add animation SOMEHOW!!!
 def play(tile, screen, place = None):
     """
     play(tile, screen, place)
@@ -297,6 +299,7 @@ if __name__ == '__main__':
     #Create the Main Window
     screen = pygame.display.set_mode(main_window_resolution, 0, 32)
     pygame.display.set_caption("Dominos!")
+    # TODO adding game icon
 
     #initialize the game
     initialize(screen)
@@ -325,7 +328,7 @@ if __name__ == '__main__':
                         HUMAN_TILES.remove(tile)
                         hide_tile(tile[1][0], tile[1][1], screen)
 
-
+                    # TODO add a PASS button
                     #Ask the computer to play
                     chosen_tile = auto_player.play(PLAYED_TILES)
                     if chosen_tile != "PASS" :
