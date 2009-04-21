@@ -173,14 +173,14 @@ def tile_check(tile):
         >>> [[(tilex,tiley),(posx,posy)],[(tilex,tiley),(posx,posy)],[(tilex,tiley),(posx,posy)]]
         
         example for last tile played on the right
-        >>> b=[[(1,11),(12,112)],[(2,22),(23,223)],[(3,33),(34,334)]]
+        >>> b=[[(0,1),(100,200)],[(0,2),(300,400)],[(0,3),(500,600)]]
         >>> print b[-1][0][1]
-        33
+        3
         represented the tiley (second_tile_value) for the last tile played on the right
         
         example for last tile played on the left
         >>> print b[0][0][0]
-        1
+        0
         represented the tilex (first_tile_value) for the last tile played on the left
     """
 
@@ -193,18 +193,13 @@ def tile_check(tile):
         return tile, "right"
     elif tile[1] == PLAYED_TILES[-1][0][1] :
         return (tile[1], tile[0]), "right"
-    ###
-    #TODO:check if the tile will be curved in the down right
-    ###
+    
     
     #check if the tile can be played on the left
     elif tile[1] == PLAYED_TILES[0][0][0] :
         return tile, "left"
     elif tile[0] == PLAYED_TILES[0][0][0] :
         return (tile[1], tile[0]), "left"
-    ###
-    #check if the tile will be curved in the down left
-    ###
     
     #If the tile isn't suitable
     else :
@@ -219,21 +214,21 @@ def play(tile, screen, place = None):
         and a place ("left" or "right"). then draws the tile on the screen.
         
         example for the x_position to the last tile played on the left
-        >>> b=[[(1,11),(12,112)],[(2,22),(23,223)],[(3,33),(34,334)]]
+        >>> b=[[(0,1),(100,200)],[(0,2),(300,400)],[(0,3),(500,600)]]
         >>> print b[0][1][0]
-        12
+        100
         
         example for the y_position to the last tile played on the left
         >>> print b[0][1][1]
-        112
+        200
         
         example for the x_position to the last tile played on the right
         >>> print b[-1][1][0]
-        34
+        500
         
         example for the y_position to the last tile played on the right
         >>> print b[-1][1][1]
-        334 
+        600 
     """
 
     #Initialize the place of the tile
