@@ -1,13 +1,5 @@
 #!/usr/bin/env python
-'''
-Created in Apr 6, 2009
 
-@author: Abdallah Saeed
-
-modified by Mohamed Elemam in Apr 8, 2009
-	modification:
-		changed functions' names and modified them to be much more readable
-'''
 import sys, pygame
 
 class Tile(object):
