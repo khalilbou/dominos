@@ -28,9 +28,9 @@ PLAYED_TILES = []
 def seticon(iconname):
     """
     give an iconname, a bitmap sized 32x32 pixels, black (0,0,0) will be alpha channel
-    
+
     the windowicon will be set to the bitmap, but the black pixels will be full alpha channel
-     
+
     can only be called once after pygame.init() and before somewindow = pygame.display.set_mode()
     """
     icon=pygame.Surface((32,32))
@@ -83,7 +83,7 @@ def distribute_tiles(tiles_set, players_count):
     for i in range(0, 7):
         for j in range(players_count):
             random_number = randrange(0, len(tiles_set))
-            # TODO (DONE) use the 'pop' method instead of the following active two lines            
+            # TODO (DONE) use the 'pop' method instead of the following active two lines
             final_list[j].append(tiles_set.pop(random_number))
 
     return final_list
@@ -130,7 +130,7 @@ def initialize(screen):
 def draw_bg(screen):
     """
     draw_bg()
-        drawing the board background 
+        drawing the board background
     """
     screen.blit(bg_image,(0,0))
     pygame.display.flip()
@@ -184,13 +184,13 @@ def tile_check(tile):
 
         syntax:
         >>> [[(tilex,tiley),(posx,posy)],[(tilex,tiley),(posx,posy)],[(tilex,tiley),(posx,posy)]]
-        
+
         example for last tile played on the right
         >>> b=[[(0,1),(100,200)],[(0,2),(300,400)],[(0,3),(500,600)]]
         >>> print b[-1][0][1]
         3
         represented the tiley (second_tile_value) for the last tile played on the right
-        
+
         example for last tile played on the left
         >>> print b[0][0][0]
         0
@@ -220,29 +220,29 @@ def tile_check(tile):
 #----------------------------------------------------------------------------
 # TODO Add animation SOMEHOW!!!
 # TODO make the can be played left and can be played right in the same turn
-#ask the player where to play his tiles 
+#ask the player where to play his tiles
 def play(tile, screen, place = None):
     """
     play(tile, screen, place)
         this function takes a tile as a "tuple", display
         and a place ("left" or "right"). then draws the tile on the screen.
-                
+
         example for the x_position to the last tile played on the left
         >>> b=[[(0,1),(100,200)],[(0,2),(300,400)],[(0,3),(500,600)]]
         >>> print b[0][1][0]
         100
-        
+
         example for the y_position to the last tile played on the left
         >>> print b[0][1][1]
         200
-        
+
         example for the x_position to the last tile played on the right
         >>> print b[-1][1][0]
         500
-        
+
         example for the y_position to the last tile played on the right
         >>> print b[-1][1][1]
-        600 
+        600
     """
 
     #Initialize the place of the tile
@@ -271,13 +271,13 @@ def play(tile, screen, place = None):
 
             #if the tile is DUO and going to be placed on the left side
             if place == "left" :
-                tile_x = PLAYED_TILES[0][1][0] - 34
+                tile_x = PLAYED_TILES[0][1][0] - 36
                 tile_y = PLAYED_TILES[0][1][1] - 17
                 PLAYED_TILES.insert(0, [tile, (tile_x, tile_y)])
 
             #if the tile is DUO and going to be placed on the right side
             elif place == "right" :
-                tile_x = PLAYED_TILES[-1][1][0] + 68
+                tile_x = PLAYED_TILES[-1][1][0] + 70
                 tile_y = PLAYED_TILES[-1][1][1] - 17
                 PLAYED_TILES.append([tile, (tile_x, tile_y)])
 
@@ -289,13 +289,13 @@ def play(tile, screen, place = None):
 
                 #check if the previous tile was DUO
                 if PLAYED_TILES[0][0][0] == PLAYED_TILES[0][0][1] :
-                    tile_x = PLAYED_TILES[0][1][0] - 68
+                    tile_x = PLAYED_TILES[0][1][0] - 70
                     tile_y = PLAYED_TILES[0][1][1] + 17
                     PLAYED_TILES.insert(0, [tile, (tile_x, tile_y)])
 
                 #If the previous was't DUO
                 else :
-                    tile_x = PLAYED_TILES[0][1][0] - 68
+                    tile_x = PLAYED_TILES[0][1][0] - 70
                     tile_y = PLAYED_TILES[0][1][1]
                     PLAYED_TILES.insert(0, [tile, (tile_x, tile_y)])
 
@@ -304,13 +304,13 @@ def play(tile, screen, place = None):
 
                 #If the previous tile was DUO
                 if PLAYED_TILES[-1][0][0] == PLAYED_TILES[-1][0][1] :
-                    tile_x = PLAYED_TILES[-1][1][0] + 34
+                    tile_x = PLAYED_TILES[-1][1][0] + 36
                     tile_y = PLAYED_TILES[-1][1][1] + 17
                     PLAYED_TILES.append([tile, (tile_x, tile_y)])
 
                 #If the previous tile wasn't DUO
                 else :
-                    tile_x = PLAYED_TILES[-1][1][0] + 68
+                    tile_x = PLAYED_TILES[-1][1][0] + 70
                     tile_y = PLAYED_TILES[-1][1][1]
                     PLAYED_TILES.append([tile, (tile_x, tile_y)])
 
@@ -343,13 +343,13 @@ def END_GAME():
 
 if __name__ == '__main__':
 
-    #Initialize PyGame    
+    #Initialize PyGame
     pygame.init()
-    
+
     # TODO (DONE) adding game icon
-    
+
     seticon('images/icon.png')
-    
+
     #Create the Main Window
     screen = pygame.display.set_mode(main_window_resolution, 0, 32)
     pygame.display.set_caption("Dominos!")
