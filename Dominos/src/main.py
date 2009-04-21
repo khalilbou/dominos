@@ -1,10 +1,4 @@
 #!/usr/bin/env python
-'''
-Created on Apr 7, 2009
-
-@author: Mohamed Elemam
-    Modified by Abdelhamid Ibrahim , Abdalla Saeed
-'''
 
 #------------------IMPORTS------------------------
 import pygame
@@ -31,6 +25,24 @@ PLAYED_TILES = []
 
 #----------------------------------------------------------------------------
 
+def seticon(iconname):
+    """
+    give an iconname, a bitmap sized 32x32 pixels, black (0,0,0) will be alpha channel
+    
+    the windowicon will be set to the bitmap, but the black pixels will be full alpha channel
+     
+    can only be called once after pygame.init() and before somewindow = pygame.display.set_mode()
+    """
+    icon=pygame.Surface((32,32))
+    icon.set_colorkey((0,0,0))
+    rawicon=pygame.image.load(iconname)
+    for i in range(0,32):
+        for j in range(0,32):
+            icon.set_at((i,j), rawicon.get_at((i,j)))
+    pygame.display.set_icon(icon)
+
+#----------------------------------------------------------------------------
+
 def generate_tiles():
     """ generate_tiles()
         this function takes nothing and returns a complete dominos list of 28 elements
@@ -42,6 +54,7 @@ def generate_tiles():
         for j in range(i,7):
             temp.append((i,j))
     return temp
+
 #----------------------------------------------------------------------------
 
 def distribute_tiles(tiles_set, players_count):
@@ -50,7 +63,7 @@ def distribute_tiles(tiles_set, players_count):
         Takes a complete dominos list and returns a list of lists
         each list contains 7 tiles as Tuples.
         WARNING! "players_count" should be less than 4.
-        
+
         in this function we faced type of lists called list of lists
         for more clarify i will put example
         >>> count = 3
@@ -168,7 +181,7 @@ def tile_check(tile):
         Takes a tile as a tuple, and returns a tuple of (tile, position)
         which "tile" is the suitable tile, and position is "left"
         or "right" or None (if this is the first tile).
-        
+
         syntax:
         >>> [[(tilex,tiley),(posx,posy)],[(tilex,tiley),(posx,posy)],[(tilex,tiley),(posx,posy)]]
         
@@ -187,32 +200,33 @@ def tile_check(tile):
     #If this is the first tile to be played
     if len(PLAYED_TILES) == 0 :
         return tile, None
-    
+
     #check if the tile can be played on the right
     elif tile[0] == PLAYED_TILES[-1][0][1] :
         return tile, "right"
     elif tile[1] == PLAYED_TILES[-1][0][1] :
         return (tile[1], tile[0]), "right"
-    
-    
+
     #check if the tile can be played on the left
     elif tile[1] == PLAYED_TILES[0][0][0] :
         return tile, "left"
     elif tile[0] == PLAYED_TILES[0][0][0] :
         return (tile[1], tile[0]), "left"
-    
+
     #If the tile isn't suitable
     else :
         return None
 
 #----------------------------------------------------------------------------
 # TODO Add animation SOMEHOW!!!
+# TODO make the can be played left and can be played right in the same turn
+#ask the player where to play his tiles 
 def play(tile, screen, place = None):
     """
     play(tile, screen, place)
         this function takes a tile as a "tuple", display
         and a place ("left" or "right"). then draws the tile on the screen.
-        
+                
         example for the x_position to the last tile played on the left
         >>> b=[[(0,1),(100,200)],[(0,2),(300,400)],[(0,3),(500,600)]]
         >>> print b[0][1][0]
@@ -326,22 +340,6 @@ def END_GAME():
     pass
 
 #----------------------------------------------------------------------------
-def seticon(iconname):
-    """
-    give an iconname, a bitmap sized 32x32 pixels, black (0,0,0) will be alpha channel
-    
-    the windowicon will be set to the bitmap, but the black pixels will be full alpha channel
-     
-    can only be called once after pygame.init() and before somewindow = pygame.display.set_mode()
-    """
-    icon=pygame.Surface((32,32))
-    icon.set_colorkey((0,0,0))
-    rawicon=pygame.image.load(iconname)
-    for i in range(0,32):
-        for j in range(0,32):
-            icon.set_at((i,j), rawicon.get_at((i,j)))
-    pygame.display.set_icon(icon)
-
 
 if __name__ == '__main__':
 

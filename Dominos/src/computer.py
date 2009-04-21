@@ -1,8 +1,4 @@
-'''
-Created on Apr 7, 2009
-
-@author: Mohamed Emam
-'''
+#!/usr/bin/env python
 
 class computer(object):
     '''
