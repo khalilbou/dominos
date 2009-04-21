@@ -336,8 +336,19 @@ def hide_tile(x, y, screen):
 
 #----------------------------------------------------------------------------
 
+def score_count(WHOS_TILE):
+    tiles_length = len(WHOS_TILE)
+    tiles_count = 0
+    for i in range(0, tiles_length):
+        tiles_count += WHOS_TILE[i][0][0]
+        tiles_count += WHOS_TILE[i][0][1]
+    return tiles_count
+
 def END_GAME():
     pass
+#    print "GAME OVER!"
+#    print "Your Tiles = " + str(score_count(HUMAN_TILES))
+#    print "Computer Tiles = " + str(score_count(COMPUTER_TILES))
 
 #----------------------------------------------------------------------------
 
@@ -364,7 +375,6 @@ if __name__ == '__main__':
 
         #Handling PyGame events
         event = pygame.event.wait()
-
         #Handling the QUIT signal
         if event.type == QUIT:
             exit()
