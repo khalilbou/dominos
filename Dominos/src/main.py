@@ -12,7 +12,6 @@ from Tile import *
 #------------------Constants----------------------
 main_window_resolution = (800, 600)
 outer_color = (140,95,22)
-bg_image = pygame.image.load("images/bg.png")
 
 #-------------------Variables--------------------------
 __PASS__ = 0
@@ -90,6 +89,17 @@ def distribute_tiles(tiles_set, players_count):
 
 #----------------------------------------------------------------------------
 
+def draw_bg(screen):
+    """
+    draw_bg()
+        drawing the board background
+    """
+    bg_image = pygame.image.load("images/bg.png")
+    screen.blit(bg_image,(0,0))
+    pygame.display.flip()
+
+#----------------------------------------------------------------------------
+
 def initialize(screen):
     """
     initialize(screen)
@@ -124,16 +134,6 @@ def initialize(screen):
     #draw the background and dominos tiles on the screen
     draw_bg(screen)
     draw_tiles(screen)
-
-#----------------------------------------------------------------------------
-
-def draw_bg(screen):
-    """
-    draw_bg()
-        drawing the board background
-    """
-    screen.blit(bg_image,(0,0))
-    pygame.display.flip()
 
 #----------------------------------------------------------------------------
 
