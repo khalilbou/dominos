@@ -391,6 +391,7 @@ if __name__ == '__main__':
                         HUMAN_TILES.remove(tile)
                         hide_tile(tile[1][0], tile[1][1], screen)
 
+                    
                     # TODO add a PASS button
                     #Ask the computer to play
                     chosen_tile = auto_player.play(PLAYED_TILES)
