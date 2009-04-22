@@ -351,7 +351,6 @@ def END_GAME():
 #    print "Computer Tiles = " + str(score_count(COMPUTER_TILES))
 
 #----------------------------------------------------------------------------
-
 if __name__ == '__main__':
 
     #Initialize PyGame
