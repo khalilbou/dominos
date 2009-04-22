@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from pygame import time
 
 #------------------IMPORTS------------------------
 import pygame
