@@ -1,11 +1,12 @@
 #!/usr/bin/env python
+from pygame import time
 
 #------------------IMPORTS------------------------
 import pygame
 from pygame.locals import *
 from random import randrange
 from sys import exit
-from time import sleep
+from time import *
 from computer import *
 from Tile import *
 
@@ -395,6 +396,7 @@ if __name__ == '__main__':
                     chosen_tile = auto_player.play(PLAYED_TILES)
                     if chosen_tile != "PASS" :
                         final_tile = tile_check(chosen_tile[0])
+                        pygame.time.wait(1000)
                         play(final_tile[0], screen, final_tile[1])
                         hide_tile(chosen_tile[1][0], chosen_tile[1][1], screen)
 
