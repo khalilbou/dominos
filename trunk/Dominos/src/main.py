@@ -6,7 +6,7 @@ import pygame
 from pygame.locals import *
 from random import randrange
 from sys import exit
-from time import *
+from time import sleep
 from computer import *
 from Tile import *
 
