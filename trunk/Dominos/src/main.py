@@ -101,8 +101,14 @@ def draw_bg(screen):
         drawing the board background
     """
     bg_image = pygame.image.load("images/bg.png")
+    pass_button = pygame.image.load("images/deactive_pass.png")
+    replay_button = pygame.image.load("images/normal_replay.png")
+    exit_button = pygame.image.load("images/normal_exit.png")
     screen.blit(bg_image,(0,0))
-    pygame.display.flip()
+    screen.blit(pass_button,(682,514))
+    screen.blit(replay_button,(15,499))
+    screen.blit(exit_button,(15,543))
+    pygame.display.update()
 
 #----------------------------------------------------------------------------
 
@@ -118,11 +124,11 @@ def initialize(screen):
 
     #Constructing the Human Tiles list
     identifier = 0
-
+    
     x_start = main_window_resolution[0]/2 - 273
     x_end = x_start + 514
-    y_start = main_window_resolution[1] - (main_window_resolution[1]/8) - 34
-
+    y_start = main_window_resolution[1] - (main_window_resolution[1]/8) - 34 
+    
     for i in range(x_start, x_end, 80):
         HUMAN_TILES.append([both_players_tiles[0][identifier], (i, y_start)])
         identifier += 1
@@ -130,7 +136,7 @@ def initialize(screen):
 
     #Constructing the Computer Tiles list
     identifier = 0
-    y_start = (main_window_resolution[1] / 8) - 34
+    y_start = (main_window_resolution[1] / 8) -34
 
     for i in range(x_start, x_end, 80):
         COMPUTER_TILES.append([both_players_tiles[1][identifier], (i, y_start)])
@@ -148,7 +154,6 @@ def draw_tiles(screen):
     draw_tiles()
         this function draws both computer's and human's tiles
     """
-
     #Print the human Tiles on the screen
     for i in range(len(HUMAN_TILES)):
         current_tile = HUMAN_TILES[i][0]
@@ -599,6 +604,10 @@ def END_GAME():
 #    print "Your Tiles = " + str(score_count(HUMAN_TILES))
 #    print "Computer Tiles = " + str(score_count(COMPUTER_TILES))
 
+##
+#TODO:making the animation
+##
+
 #----------------------------------------------------------------------------
 if __name__ == '__main__':
 
@@ -630,8 +639,20 @@ if __name__ == '__main__':
 
         #Handling the Mouse Events (Checking whether the user clicked on a tile)
         elif event.type == MOUSEBUTTONDOWN :
+            x,y = pygame.mouse.get_pos()
+            if x >= 15 and x <= 91 and y >= 499 and y<=525:
+                pressed_replay = pygame.image.load("images/pressed_replay.png")
+                screen.blit(pressed_replay,(15,499))
+                pygame.time.wait(300)
+                pass
+            
+            elif x >= 15 and x <= 91 and y >= 543 and y<=570:
+                pressed_exit = pygame.image.load("images/pressed_exit.png")
+                screen.blit(pressed_exit,(15,543))
+                exit()
+                
+                
             for tile in HUMAN_TILES :
-
                 #if the human clicked on a tile
                 if clicked_on_tile(event.pos, tile[1]):
                     result = tile_check(tile[0])
@@ -663,7 +684,6 @@ if __name__ == '__main__':
                         #If the human didn't say "PASS" last time, set __PASS__ to 1
                         else :
                             __PASS__ = 1
-
 
         pygame.display.update()
 
