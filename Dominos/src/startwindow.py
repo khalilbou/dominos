@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import pygame
 from pygame.locals import *
 from sys import exit
@@ -12,7 +14,7 @@ class splashWindow(object):
         """
         pygame.init()
         seticon('images/icon.png')
-        start_screen = pygame.display.set_mode((498,501),NOFRAME)
+        start_screen = pygame.display.set_mode((498,501),NOFRAME,32)
         init_background = pygame.image.load("images/init_bg.png").convert()
         pygame.display.set_caption("Dominoes!")
         onQuite_clicked_img = pygame.image.load("images/onclicked1.png")
