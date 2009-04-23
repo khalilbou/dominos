@@ -22,6 +22,12 @@ COMPUTER_TILES = []
 
 PLAYED_TILES = []
 
+LEFT_DIRECTION = "left"
+RIGHT_DIRECTION = "right"
+
+LEFT_CURVE_LEVEL = 0
+RIGHT_CURVE_LEVEL = 0
+
 #----------------------------------------------------------------------------
 
 def seticon(iconname):
@@ -47,7 +53,7 @@ def generate_tiles():
         this function takes nothing and returns a complete dominos list of 28 elements
     each element of this list is a "tuple".
     """
-	# TODO (DONE) make two loops instead of this mess :D
+    # TODO (DONE) make two loops instead of this mess :D
     temp = []
     for i in range(0,7):
         for j in range(i,7):
@@ -245,6 +251,18 @@ def play(tile, screen, place = None):
         600
     """
 
+    #Inform Python that these variables is a Global variable
+    global LEFT_DIRECTION
+    global RIGHT_DIRECTION
+
+    global LEFT_CURVE_LEVEL
+    global RIGHT_CURVE_LEVEL
+
+    #Initialize the flag that determines the orientation of the tile
+    orientation = "horizontal"
+    #Initialize the flag that determines if the tile would be painted reversed
+    reverse_tile = 0
+
     #Initialize the place of the tile
     tile_x = 0
     tile_y = 0
@@ -256,11 +274,14 @@ def play(tile, screen, place = None):
         if tile[0] == tile[1]:
             tile_x = main_window_resolution[0]/2 - 17
             tile_y = main_window_resolution[1]/2 - 34
-            PLAYED_TILES.append([tile,(tile_x, tile_y)])
+            orientation = "vertical"
+
         else :
             tile_x = main_window_resolution[0]/2 - 34
             tile_y = main_window_resolution[1]/2 - 17
-            PLAYED_TILES.append([tile,(tile_x, tile_y)])
+
+        #append the tile to the PLAYED_TILES list
+        PLAYED_TILES.append([tile,(tile_x, tile_y)])
 
     #If this tile is not the first played tile, check if the user
     #passed the place or not ("left" or "right")
@@ -271,15 +292,99 @@ def play(tile, screen, place = None):
 
             #if the tile is DUO and going to be placed on the left side
             if place == "left" :
-                tile_x = PLAYED_TILES[0][1][0] - 36
-                tile_y = PLAYED_TILES[0][1][1] - 17
+
+                #[1] if the tiles still moving in the ordinary direction
+                if LEFT_DIRECTION == "left" :
+
+                    #If the tiles reached the left edge of the main window
+                    if PLAYED_TILES[0][1][0] < 110 :
+                        LEFT_DIRECTION = "up"
+
+                    tile_x = PLAYED_TILES[0][1][0] - 36
+                    tile_y = PLAYED_TILES[0][1][1] - 17
+                    orientation = "vertical"
+
+
+                #[2] If the tiles are moving UP
+                elif LEFT_DIRECTION == "up" :
+
+                    #If the tiles are moving up and reached the end of the allowed playing space
+                    if PLAYED_TILES[0][1][1] < main_window_resolution[1]/4 + 110:
+                        LEFT_DIRECTION = "right"
+
+                    if LEFT_CURVE_LEVEL == 0 :
+
+                        tile_x = PLAYED_TILES[0][1][0] - 36
+                        tile_y = PLAYED_TILES[0][1][1] - 17
+                        orientation = "vertical"
+
+                    else :
+
+                        tile_x = PLAYED_TILES[0][1][0] - 17
+                        tile_y = PLAYED_TILES[0][1][1] - 36
+
+
+                #[3] if the tiles are moving to the right
+                elif LEFT_DIRECTION == "right" :
+
+                    if LEFT_CURVE_LEVEL == 1 :
+                        tile_x = PLAYED_TILES[0][1][0] - 17
+                        tile_y = PLAYED_TILES[0][1][1] - 36
+
+                    else :
+                        tile_x = PLAYED_TILES[0][1][0] + 70
+                        tile_y = PLAYED_TILES[0][1][1] - 17
+                        orientation = "vertical"
+
+                #insert the tile in it's position in the PLAYED_TILES list
                 PLAYED_TILES.insert(0, [tile, (tile_x, tile_y)])
+
 
             #if the tile is DUO and going to be placed on the right side
             elif place == "right" :
-                tile_x = PLAYED_TILES[-1][1][0] + 70
-                tile_y = PLAYED_TILES[-1][1][1] - 17
+
+                #[1] if the tiles still moving in the ordinary direction
+                if RIGHT_DIRECTION == "right" :
+
+                    #if the tiles reached the right edge
+                    if PLAYED_TILES[-1][1][0] > main_window_resolution[0] - 170 :
+                        RIGHT_DIRECTION = "down"
+
+                    tile_x = PLAYED_TILES[-1][1][0] + 70
+                    tile_y = PLAYED_TILES[-1][1][1] - 17
+                    orientation = "vertical"
+
+                #[2] if the tiles are moving down
+                elif RIGHT_DIRECTION == "down" :
+
+                    #if the tiles reached the end of the allowed playing space
+                    if PLAYED_TILES[-1][1][1] > main_window_resolution[1]/2 + 34 :
+                        RIGHT_DIRECTION = "left"
+
+                    if RIGHT_CURVE_LEVEL == 0:
+                        tile_x = PLAYED_TILES[-1][1][0] + 70
+                        tile_y = PLAYED_TILES[-1][1][1] - 17
+                        orientation = "vertical"
+
+                    else :
+                        tile_x = PLAYED_TILES[-1][1][0] - 17
+                        tile_y = PLAYED_TILES[-1][1][1] + 70
+
+                #[3] if the tiles are moving left
+                elif RIGHT_DIRECTION == "left" :
+
+                    if RIGHT_CURVE_LEVEL == 1 :
+                        tile_x = PLAYED_TILES[-1][1][0] - 17
+                        tile_y = PLAYED_TILES[-1][1][1] + 70
+
+                    else :
+                        tile_x = PLAYED_TILES[-1][1][0] - 36
+                        tile_y = PLAYED_TILES[-1][1][1] - 17
+                        orientation = "vertical"
+
+                #append the tile to the PLAYED_TILES list
                 PLAYED_TILES.append([tile, (tile_x, tile_y)])
+
 
         #If the tile is not DUO
         else :
@@ -287,46 +392,190 @@ def play(tile, screen, place = None):
             #if the tile is not DUO and going to be placed on the left side
             if place == "left" :
 
-                #check if the previous tile was DUO
-                if PLAYED_TILES[0][0][0] == PLAYED_TILES[0][0][1] :
-                    tile_x = PLAYED_TILES[0][1][0] - 70
-                    tile_y = PLAYED_TILES[0][1][1] + 17
-                    PLAYED_TILES.insert(0, [tile, (tile_x, tile_y)])
+                #[1] if the tiles are moving in the ordinary direction
+                if LEFT_DIRECTION == "left" :
 
-                #If the previous was't DUO
-                else :
-                    tile_x = PLAYED_TILES[0][1][0] - 70
-                    tile_y = PLAYED_TILES[0][1][1]
-                    PLAYED_TILES.insert(0, [tile, (tile_x, tile_y)])
+                    #if the tiles reached the edge of the window
+                    if PLAYED_TILES[0][1][0] < 180 :
+                        LEFT_DIRECTION = "up"
+
+                    #if the previous tile is DUO
+                    if PLAYED_TILES[0][0][0] == PLAYED_TILES[0][0][1] :
+                        tile_x = PLAYED_TILES[0][1][0] - 70
+                        tile_y = PLAYED_TILES[0][1][1] + 17
+
+                    #if the previous tile isn't DUO
+                    else :
+                        tile_x = PLAYED_TILES[0][1][0] - 70
+                        tile_y = PLAYED_TILES[0][1][1]
+
+
+                #[2] if the tiles are moving up
+                elif LEFT_DIRECTION == "up" :
+
+                    #if the tiles reached the end of the allowed space
+                    if PLAYED_TILES[0][1][1] < main_window_resolution[1]/4 + 145:
+                        LEFT_DIRECTION = "right"
+
+                    #if this is the first tile moving up, don't care about the
+                    #previous tile (DUO or not)
+                    if LEFT_CURVE_LEVEL == 0 :
+
+                        #mark the flag as we are moving up now
+                        LEFT_CURVE_LEVEL = 1
+
+                        tile_x = PLAYED_TILES[0][1][0]
+                        tile_y = PLAYED_TILES[0][1][1] - 70
+
+                    #if this isn't the first tile moving up
+                    else :
+                        #if the previous tile is DUO
+                        if PLAYED_TILES[0][0][0] == PLAYED_TILES[0][0][1] :
+                            tile_x = PLAYED_TILES[0][1][0] + 17
+                            tile_y = PLAYED_TILES[0][1][1] - 70
+
+                        #if the previous tile isn't DUO
+                        else :
+                            tile_x = PLAYED_TILES[0][1][0]
+                            tile_y = PLAYED_TILES[0][1][1] - 70
+
+                    #mark the orientation as vertical
+                    orientation = "vertical"
+
+
+                #[3] if the tiles are moving right
+                elif LEFT_DIRECTION == "right" :
+                    if LEFT_CURVE_LEVEL == 1 :
+
+                        LEFT_CURVE_LEVEL = 2
+
+                        if PLAYED_TILES[0][0][0] == PLAYED_TILES[0][0][1] :
+                            tile_x = PLAYED_TILES[0][1][0] + 70
+                            tile_y = PLAYED_TILES[0][1][1]
+
+                        else :
+                            tile_x = PLAYED_TILES[0][1][0]
+                            tile_y = PLAYED_TILES[0][1][1] - 36
+
+                    else :
+                        if PLAYED_TILES[0][0][0] == PLAYED_TILES[0][0][1] :
+                            tile_x = PLAYED_TILES[0][1][0] + 36
+                            tile_y = PLAYED_TILES[0][1][1] + 17
+
+                        else :
+                            tile_x = PLAYED_TILES[0][1][0] + 70
+                            tile_y = PLAYED_TILES[0][1][1]
+
+                    reverse_tile = 1
+
+                #insert the tile in it's position in the PLAYED_TILES list
+                PLAYED_TILES.insert(0, [tile, (tile_x, tile_y)])
 
             #if the tile is not DUO and going to be placed on the right side
             elif place == "right" :
 
-                #If the previous tile was DUO
-                if PLAYED_TILES[-1][0][0] == PLAYED_TILES[-1][0][1] :
-                    tile_x = PLAYED_TILES[-1][1][0] + 36
-                    tile_y = PLAYED_TILES[-1][1][1] + 17
-                    PLAYED_TILES.append([tile, (tile_x, tile_y)])
+                #[1] if the tiles are moving in the ordinary direction
+                if RIGHT_DIRECTION == "right" :
 
-                #If the previous tile wasn't DUO
-                else :
-                    tile_x = PLAYED_TILES[-1][1][0] + 70
-                    tile_y = PLAYED_TILES[-1][1][1]
-                    PLAYED_TILES.append([tile, (tile_x, tile_y)])
+                    #if the tiles reached the right edge
+                    if PLAYED_TILES[-1][1][0] > main_window_resolution[0] - 210 :
+                        RIGHT_DIRECTION = "down"
+
+                    #If the previous tile was DUO
+                    if PLAYED_TILES[-1][0][0] == PLAYED_TILES[-1][0][1] :
+                        tile_x = PLAYED_TILES[-1][1][0] + 36
+                        tile_y = PLAYED_TILES[-1][1][1] + 17
+
+                    #If the previous tile wasn't DUO
+                    else :
+                        tile_x = PLAYED_TILES[-1][1][0] + 70
+                        tile_y = PLAYED_TILES[-1][1][1]
+
+
+                #[2] if the tiles are moving down
+                elif RIGHT_DIRECTION == "down" :
+
+                    #if the tiles reached the end of the allowed playing space
+                    if PLAYED_TILES[-1][1][1] > main_window_resolution[1]/2 - 20 :
+                        RIGHT_DIRECTION = "left"
+
+                    #if this is the first tile to be played down
+                    if RIGHT_CURVE_LEVEL == 0:
+
+                        #mark the flag as we are moving down now
+                        RIGHT_CURVE_LEVEL = 1
+
+                        #if the previous tile was DUO
+                        if PLAYED_TILES[-1][0][0] == PLAYED_TILES[-1][0][1] :
+                            tile_x = PLAYED_TILES[-1][1][0]
+                            tile_y = PLAYED_TILES[-1][1][1] + 70
+
+                        #if the previous tile wasn't DUO
+                        else :
+                            tile_x = PLAYED_TILES[-1][1][0] + 34
+                            tile_y = PLAYED_TILES[-1][1][1] + 36
+
+
+                    #if this isn't the first tile to be played down
+                    else :
+
+                        if PLAYED_TILES[-1][0][0] == PLAYED_TILES[-1][0][1] :
+                            tile_x = PLAYED_TILES[-1][1][0] + 17
+                            tile_y = PLAYED_TILES[-1][1][1] + 36
+
+                        else :
+                            tile_x = PLAYED_TILES[-1][1][0]
+                            tile_y = PLAYED_TILES[-1][1][1] + 70
+
+                    #mark the orientation as vertical
+                    orientation = "vertical"
+
+
+                #[3] if the tiles are moving left
+                elif RIGHT_DIRECTION == "left" :
+
+                    if RIGHT_CURVE_LEVEL == 1 :
+
+                        RIGHT_CURVE_LEVEL = 2
+
+                        if PLAYED_TILES[-1][0][0] == PLAYED_TILES[-1][0][1] :
+                            tile_x = PLAYED_TILES[-1][1][0] - 70
+                            tile_y = PLAYED_TILES[-1][1][1]
+
+                        else :
+                            tile_x = PLAYED_TILES[-1][1][0] - 34
+                            tile_y = PLAYED_TILES[-1][1][1] + 70
+
+
+                    else :
+
+                        if PLAYED_TILES[-1][0][0] == PLAYED_TILES[-1][0][1] :
+                            tile_x = PLAYED_TILES[-1][1][0] - 70
+                            tile_y = PLAYED_TILES[-1][1][1] + 17
+
+                        else :
+                            tile_x = PLAYED_TILES[-1][1][0] - 70
+                            tile_y = PLAYED_TILES[-1][1][1]
+
+                    #set the reverse flag so that the tile is painted reversed
+                    reverse_tile = 1
+
+                #append the tile to the PLAYED_TILES list
+                PLAYED_TILES.append([tile, (tile_x, tile_y)])
+
 
     #Create a Tile object
-    temp_tile = Tile(tile[0], tile[1], screen, tile_x, tile_y)
+    if reverse_tile == 0 :
+        temp_tile = Tile(tile[0], tile[1], screen, tile_x, tile_y)
+    else :
+        temp_tile = Tile(tile[1], tile[0], screen, tile_x, tile_y)
 
-    #Check if this tile is DUO
-    if tile[0] == tile[1]:
-
-        #If the tile is DUO, then it will be placed vertically
-        temp_tile.show_vertical()
+    #show the tile according to it's suitable orientation
+    if orientation == "horizontal" :
+        temp_tile.show_horizontal()
 
     else :
-
-        #If the tile is not DUO, then it will be placed horizontally
-        temp_tile.show_horizontal()
+        temp_tile.show_vertical()
 
 #----------------------------------------------------------------------------
 
@@ -374,6 +623,7 @@ if __name__ == '__main__':
 
         #Handling PyGame events
         event = pygame.event.wait()
+
         #Handling the QUIT signal
         if event.type == QUIT:
             exit()
@@ -390,7 +640,10 @@ if __name__ == '__main__':
                         HUMAN_TILES.remove(tile)
                         hide_tile(tile[1][0], tile[1][1], screen)
 
-                    
+                        #refresh the display before the computer plays
+                        #because the computer will sleep for one second
+                        pygame.display.update()
+
                     # TODO add a PASS button
                     #Ask the computer to play
                     chosen_tile = auto_player.play(PLAYED_TILES)
@@ -407,12 +660,9 @@ if __name__ == '__main__':
                         if __PASS__ == 1 :
                             END_GAME()
 
-                        #If the human didn't say "ASS" last time, set __PASS__ to 1
+                        #If the human didn't say "PASS" last time, set __PASS__ to 1
                         else :
                             __PASS__ = 1
-
-
-
 
 
         pygame.display.update()
