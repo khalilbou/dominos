@@ -27,10 +27,10 @@ class Tile(object):
 
 		self._screen.blit(self._square1, (self._X,self._Y))
 		self._screen.blit(self._square2, ((self._X+34),self._Y))
-		pygame.display.flip()
+		pygame.display.update()
 
 
 	def show_vertical(self):
 		self._screen.blit(self._square1, (self._X, self._Y))
 		self._screen.blit(self._square2, (self._X, (self._Y+34)))
-		pygame.display.flip()
+		pygame.display.update()
