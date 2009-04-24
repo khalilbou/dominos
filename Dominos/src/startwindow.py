@@ -3,7 +3,7 @@
 import pygame
 from pygame.locals import *
 from sys import exit
-from main import seticon
+from main import *
 
 class splashWindow(object):
  
@@ -33,10 +33,7 @@ class splashWindow(object):
                         start_screen.blit(onenjoy_clicked_img,(190,438))
                         pygame.display.update()
                         pygame.time.wait(500)
-                        pass
-                        ###
-                        #TODO:INITIATE THE BOARD WINDOW
-                        ###
+                        main()
                     
                     elif x >= 324 and x <= 423 and y >= 327 and y<=369:
                         start_screen.blit(onQuite_clicked_img,(317,322))
@@ -46,7 +43,8 @@ class splashWindow(object):
             start_screen.blit(init_background,(0,0))
             pygame.display.update()
 
-splashWindow()
+if __name__ == '__main__':
+    splashWindow()
             
         
         

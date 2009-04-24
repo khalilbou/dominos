@@ -608,20 +608,18 @@ def END_GAME():
 #TODO:making the animation
 ##
 
-#----------------------------------------------------------------------------
-if __name__ == '__main__':
-
+def main():
+    
     #Initialize PyGame
     pygame.init()
-
-    # TODO (DONE) adding game icon
-
+    
+    #adding window icon
     seticon('images/icon.png')
-
-    #Create the Main Window
+    
+    #create the Main window
     screen = pygame.display.set_mode(main_window_resolution, 0, 32)
     pygame.display.set_caption("Dominos!")
-
+    
     #initialize the game
     initialize(screen)
     auto_player = computer(COMPUTER_TILES)
@@ -629,7 +627,6 @@ if __name__ == '__main__':
 #####################  MAIN LOOP  #######################
 
     while True:
-
         #Handling PyGame events
         event = pygame.event.wait()
 
@@ -645,6 +642,7 @@ if __name__ == '__main__':
                 screen.blit(pressed_replay,(15,499))
                 pygame.time.wait(300)
                 pass
+    
             
             elif x >= 15 and x <= 91 and y >= 543 and y<=570:
                 pressed_exit = pygame.image.load("images/pressed_exit.png")
@@ -685,5 +683,4 @@ if __name__ == '__main__':
                         else :
                             __PASS__ = 1
 
-        pygame.display.update()
-
+        pygame.display.update()            
