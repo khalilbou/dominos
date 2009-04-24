@@ -27,7 +27,3 @@ class Animate(object):
             screen.blit(bg,Tile_Moved)
             pygame.display.update()
             
-            
-          
-        
-        
