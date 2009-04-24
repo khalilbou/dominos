@@ -4,6 +4,8 @@ import pygame
 from pygame.locals import *
 from sys import exit
 from main import *
+import os
+
 
 class splashWindow(object):
  
@@ -12,6 +14,7 @@ class splashWindow(object):
         __init__(self)
             this function will initiate the startwindow
         """
+        os.environ['SDL_VIDEO_CENTERED']='1'
         pygame.init()
         seticon('images/icon.png')
         start_screen = pygame.display.set_mode((498,501),NOFRAME,32)
