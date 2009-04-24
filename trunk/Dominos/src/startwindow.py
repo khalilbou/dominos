@@ -50,11 +50,21 @@ class splashWindow(object):
                         pygame.time.wait(500)
                         main()
                     
-                    elif x >= 324 and x <= 423 and y >= 327 and y<=369:
+                    if x >= 324 and x <= 423 and y >= 327 and y<=369:
                         start_screen.blit(onQuite_clicked_img,(317,322))
                         quitTick.play(1)
                         pygame.display.update()
                         exit()
+                
+                if event.type == KEYDOWN:
+                    if event.key == K_KP_ENTER or event.key == K_SPACE:
+                        enjoyTick.play(1)
+                        main()
+                        
+                    if event.key == K_ESCAPE:
+                        quitTick.play(1)
+                        exit()
+                        
             
             start_screen.blit(init_background,(0,0))
             pygame.display.update()
