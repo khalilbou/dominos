@@ -4,7 +4,7 @@ import pygame
 from pygame.locals import *
 from sys import exit
 from main import *
-from os import environ
+from os import environ,path
 
 
 class splashWindow(object):
@@ -23,6 +23,19 @@ class splashWindow(object):
         onQuite_clicked_img = pygame.image.load("images/onclicked1.png")
         onenjoy_clicked_img = pygame.image.load("images/onclicked2.png")
         
+        bg_sound = path.join('sounds','bg.wav')
+        soundtrack = pygame.mixer.Sound(bg_sound)
+        soundtrack.set_volume(0.9)
+        soundtrack.play(-1)
+        
+        enjoy_sound = path.join('sounds','enjoy.wav')
+        enjoyTick = pygame.mixer.Sound(enjoy_sound)
+        enjoyTick.set_volume(0.9)
+
+        quit_sound = path.join('sounds','quit.wav')
+        quitTick = pygame.mixer.Sound(quit_sound)
+        quitTick.set_volume(0.9)
+                
         while True:
             for event in pygame.event.get():
                 if event.type == QUIT:
@@ -32,12 +45,14 @@ class splashWindow(object):
                     x,y = pygame.mouse.get_pos()
                     if x >= 172 and x <= 320 and y >= 435 and y<=480:
                         start_screen.blit(onenjoy_clicked_img,(190,438))
+                        enjoyTick.play(1)
                         pygame.display.update()
                         pygame.time.wait(500)
                         main()
                     
                     elif x >= 324 and x <= 423 and y >= 327 and y<=369:
                         start_screen.blit(onQuite_clicked_img,(317,322))
+                        quitTick.play(1)
                         pygame.display.update()
                         exit()
             
