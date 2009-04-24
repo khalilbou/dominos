@@ -4,7 +4,7 @@ import pygame
 from pygame.locals import *
 from sys import exit
 from main import *
-import os
+from os import environ
 
 
 class splashWindow(object):
@@ -14,7 +14,7 @@ class splashWindow(object):
         __init__(self)
             this function will initiate the startwindow
         """
-        os.environ['SDL_VIDEO_CENTERED']='1'
+        environ['SDL_VIDEO_CENTERED']='1'
         pygame.init()
         seticon('images/icon.png')
         start_screen = pygame.display.set_mode((498,501),NOFRAME,32)
@@ -22,9 +22,7 @@ class splashWindow(object):
         pygame.display.set_caption("Dominoes!")
         onQuite_clicked_img = pygame.image.load("images/onclicked1.png")
         onenjoy_clicked_img = pygame.image.load("images/onclicked2.png")
-        ###
-        #TODO: MAKE CENTER IS THE DEFAULT POSITION
-        ###
+        
         while True:
             for event in pygame.event.get():
                 if event.type == QUIT:
