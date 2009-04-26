@@ -22,7 +22,7 @@ class Tile(object):
 	def show_horizontal(self):
 		if self._number1 == 6 :
 			self._square1 = pygame.image.load("images/6r.png").convert()
-		elif self._number2 == 6 :
+		if self._number2 == 6 :
 			self._square2 = pygame.image.load("images/6r.png").convert()
 
 		self._screen.blit(self._square1, (self._X,self._Y))
