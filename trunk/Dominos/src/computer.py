@@ -22,22 +22,52 @@ class computer(object):
             returns the best tile to play. or returns "PASS" if
             there are no suitable tiles.
         """
-        suitable_tiles=self.get_suitable_tiles(played_tiles[0][0][0], played_tiles[-1][0][1])
 
-        #there is no suitable tiles, return "PASS"
-        if len(suitable_tiles) == 0 :
-            return "PASS"
+        #if this is the first tile to be played, play the biggest tile
+        if len(played_tiles) == 0 :
+            biggest_tile = self.get_biggest_tile()
+            self._tiles_list.remove(biggest_tile)
+            return biggest_tile
 
-        #there is only one suitable tile, return it
-        elif len(suitable_tiles) == 1 :
-            self._tiles_list.remove(suitable_tiles[0])
-            return suitable_tiles[0]
-
-        #there are more than one suitable tile, ask the "get_best_tile" method
+        #if this is NOT the first tile to be played
         else :
-            best_tile=self.get_best_tile(played_tiles, suitable_tiles)
-            self._tiles_list.remove(best_tile)
-            return best_tile
+
+            #check for the suitable tiles to be played
+            suitable_tiles=self.get_suitable_tiles(played_tiles[0][0][0], played_tiles[-1][0][1])
+
+            #there is no suitable tiles, return "PASS"
+            if len(suitable_tiles) == 0 :
+                return "PASS"
+
+            #there is only one suitable tile, return it
+            elif len(suitable_tiles) == 1 :
+                self._tiles_list.remove(suitable_tiles[0])
+                return suitable_tiles[0]
+
+            #there are more than one suitable tile, ask the "get_best_tile" method
+            else :
+                best_tile=self.get_best_tile(played_tiles, suitable_tiles)
+                self._tiles_list.remove(best_tile)
+                return best_tile
+
+#---------------------------------------------------
+
+    def get_biggest_tile(self):
+        """
+        get_biggest_tile()
+            returns the biggest tile in the computer's tiles list
+        """
+
+        biggest_tile = [0, 0]
+
+        for tile in self._tiles_list :
+            temp = tile[0][0] + tile[0][1]
+
+            if temp > biggest_tile[0] :
+                biggest_tile[0] = temp
+                biggest_tile[1] = tile
+
+        return biggest_tile[1]
 
 #---------------------------------------------------
 
