@@ -11,7 +11,7 @@ from Tile import *
 from os import path
 
 #------------------Constants----------------------
-main_window_resolution = (800, 600)
+main_window_resolution = (1024, 768)
 
 HIDE_TILE_COLOR = (140,95,22)
 
@@ -911,7 +911,7 @@ def main():
     seticon('images/icon.png')
 
     #create the Main window
-    screen = pygame.display.set_mode(main_window_resolution, 0, 32)
+    screen = pygame.display.set_mode(main_window_resolution, FULLSCREEN, 32)
     pygame.display.set_caption("Dominos!")
     
     button_highlight_img = pygame.image.load("images/on_clicked_button.png")
@@ -971,17 +971,17 @@ def main():
                 #if the player clicked on the exit button on the POP UP message
                 elif x > (popup_x + 113) and x < (popup_x + 230)\
                  and y > (popup_y + 286) and y< (popup_y + 334) :
-                    screen.blit(button_highlight_img,(popup_x/2+189,popup_y/2+354))
+                    screen.blit(button_highlight_img,(popup_x + 115,popup_y + 288))
                     cancelReplay_soundtrack.play(0)
                     pygame.display.update()
-                    pygame.time.wait(500)
+                    pygame.time.wait(100)
                     #exit the game
                     exit()
 
                 #if the player clicked on the replay button on the POP UP message
                 elif x > (popup_x + 278) and x < (popup_x + 395)\
                  and y > (popup_y + 288) and y< (popup_y + 336) :
-                    screen.blit(button_highlight_img,(popup_x/2+352,popup_y/2+354))
+                    screen.blit(button_highlight_img,(popup_x + 278,popup_y + 288))
                     replay_soundtrack.play(0)
                     pygame.display.update()
                     pygame.time.wait(500)
