@@ -9,10 +9,12 @@ Our game will be written in Python Programming language cause it very easy and s
 
 the project is under GPL (GNU General Public Licensee ) to get the advantage of Open source community
 
-What is [Dominoes]
+== articles ==
 
-Python Programming language.
+      * What is [Dominoes]
 
-[http://code.google.com/p/dominos/wiki/OpenSource OpenSource]
+        Python Programming language.
 
-Tools and Resources. 
+        [http://code.google.com/p/dominos/wiki/OpenSource OpenSource]
+
+         Tools and Resources.  *
