@@ -913,9 +913,9 @@ def main():
     #create the Main window
     screen = pygame.display.set_mode(main_window_resolution, FULLSCREEN, 32)
     pygame.display.set_caption("Dominos!")
-    
+
     button_highlight_img = pygame.image.load("images/on_clicked_button.png")
-    
+
     cancelReplay_sound = path.join('sounds','cancel_replay.wav')
     cancelReplay_soundtrack = pygame.mixer.Sound(cancelReplay_sound)
     cancelReplay_soundtrack.set_volume(0.9)
@@ -927,11 +927,11 @@ def main():
     replay_sound = path.join('sounds','replay.wav')
     replay_soundtrack = pygame.mixer.Sound(replay_sound)
     replay_soundtrack.set_volume(0.9)
-    
+
     #initialize the game
     initialize(screen)
     auto_player = computer(COMPUTER_TILES)
-    
+
 #####################  MAIN LOOP  #######################
 
     while True:
