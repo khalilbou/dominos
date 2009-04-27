@@ -11,6 +11,8 @@ so we'll be using:
 
 • Eclipse: as the python IDE
 
+•SVN: google codes subversion
+
 • Synfig program as an alternative to Adobe Flash to make flash works
 
 . gimp : photo Editor
