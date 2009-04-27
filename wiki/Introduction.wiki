@@ -9,7 +9,7 @@ Our game will be written in Python Programming language cause it very easy and s
 
 the project is under GPL (GNU General Public Licensee ) to get the advantage of Open source community
 
-What is Dominoes?
+What is [Dominoes]
 
 Python Programming language.
 
