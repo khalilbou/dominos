@@ -831,7 +831,6 @@ def END_GAME(screen):
     won_game_img = pygame.image.load("images/you_won_img.png")
     lose_game_img = pygame.image.load("images/you_lose_img.png")
     game_drawn_img = pygame.image.load("images/drawn_img.png")
-    button_highlight_img = pygame.image.load("images/on_clicked_button.png")
 
     #constructing sounds
     winner_sound = path.join('sounds','game_over_win.wav')
@@ -914,15 +913,25 @@ def main():
     #create the Main window
     screen = pygame.display.set_mode(main_window_resolution, 0, 32)
     pygame.display.set_caption("Dominos!")
+    
+    button_highlight_img = pygame.image.load("images/on_clicked_button.png")
+    
+    cancelReplay_sound = path.join('sounds','cancel_replay.wav')
+    cancelReplay_soundtrack = pygame.mixer.Sound(cancelReplay_sound)
+    cancelReplay_soundtrack.set_volume(0.9)
 
     playedtile_sound = path.join('sounds','playedtile.wav')
     playedtile_soundtrack = pygame.mixer.Sound(playedtile_sound)
     playedtile_soundtrack.set_volume(0.9)
 
+    replay_sound = path.join('sounds','replay.wav')
+    replay_soundtrack = pygame.mixer.Sound(replay_sound)
+    replay_soundtrack.set_volume(0.9)
+    
     #initialize the game
     initialize(screen)
     auto_player = computer(COMPUTER_TILES)
-
+    
 #####################  MAIN LOOP  #######################
 
     while True:
@@ -962,14 +971,20 @@ def main():
                 #if the player clicked on the exit button on the POP UP message
                 elif x > (popup_x + 113) and x < (popup_x + 230)\
                  and y > (popup_y + 286) and y< (popup_y + 334) :
-
+                    screen.blit(button_highlight_img,(popup_x/2+189,popup_y/2+354))
+                    cancelReplay_soundtrack.play(0)
+                    pygame.display.update()
+                    pygame.time.wait(500)
                     #exit the game
                     exit()
 
                 #if the player clicked on the replay button on the POP UP message
-                elif x > (popup_x + 276) and x < (popup_x + 310)\
-                 and y > (popup_y + 286) and y< (popup_y + 334) :
-
+                elif x > (popup_x + 278) and x < (popup_x + 395)\
+                 and y > (popup_y + 288) and y< (popup_y + 336) :
+                    screen.blit(button_highlight_img,(popup_x/2+352,popup_y/2+354))
+                    replay_soundtrack.play(0)
+                    pygame.display.update()
+                    pygame.time.wait(500)
                     #reset the game
                     RESET_GAME()
 
