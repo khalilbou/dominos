@@ -1,0 +1,16 @@
+= Tools and Resources =
+
+We'll be using the Python Modules to develop such a game, and the main module we're basing on is *"pygame"*.
+so we'll be using:
+
+. Python "Of Cource"
+
+• Pygame module
+
+• Pygtk module (if needed)
+
+• Eclipse: as the python IDE
+
+• Synfig program as an alternative to Adobe Flash to make flash works
+
+. gimp : photo Editor
