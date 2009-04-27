@@ -8,12 +8,14 @@
 
 . Python and Java programmer
 
-=== . mail :- BooDy.FCI@gmail.com ===
+=== . mail :- boody.fci@gmail.com ===
 == Abd El-Hamid Ibrahim:- ==
 
 . Red Hat system administrator.
 
-.web developer. 
+. web developer.
+
+. 2D Graphics designer 
 
 . Python programmer.
 
