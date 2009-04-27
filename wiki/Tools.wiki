@@ -3,7 +3,7 @@
 We'll be using the Python Modules to develop such a game, and the main module we're basing on is *"pygame"*.
 so we'll be using:
 
-. Python "Of Cource"
+• Python "Of Cource"
 
 • Pygame module
 
@@ -11,8 +11,10 @@ so we'll be using:
 
 • Eclipse: as the python IDE
 
-•SVN: google codes subversion
+• SVN: google codes subversion
 
 • Synfig program as an alternative to Adobe Flash to make flash works
 
-. gimp : photo Editor
+• gimp : photo Editor
+
+• we're using all of the previous tools under Linux operating system
