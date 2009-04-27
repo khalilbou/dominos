@@ -18,3 +18,5 @@ the project is under GPL (GNU General Public Licensee ) to get the advantage of 
       * [Tools] and Resources.
   
       * [Team] OF Work
+
+      * [Plan] and Budgets
