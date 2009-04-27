@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from reportlab.pdfbase.pdfdoc import BasicFonts
 
 #------------------IMPORTS------------------------
 import pygame
@@ -41,6 +40,8 @@ this_is_first_UP_tile = 1
 this_is_first_RIGHT_tile = 1
 
 GAME_OVER = 0
+
+PASS_BUTTON_STATUS = 0
 
 #----------------------------------------------------------------------------
 
@@ -176,6 +177,27 @@ def draw_bg(screen):
 
 #----------------------------------------------------------------------------
 
+def draw_tiles(screen):
+    """
+    draw_tiles()
+        this function draws both computer's and human's tiles
+    """
+    #Print the human Tiles on the screen
+    for i in range(len(HUMAN_TILES)):
+        current_tile = HUMAN_TILES[i][0]
+        current_position = HUMAN_TILES[i][1]
+        temp_tile = Tile(current_tile[0], current_tile[1], screen, current_position[0], current_position[1])
+        temp_tile.show_vertical()
+
+    #Print the Computer Tiles (up-side-down)
+    # TODO (DONE) changing the Computer tiles image
+    for i in range(len(COMPUTER_TILES)):
+        current_position = COMPUTER_TILES[i][1]
+        temp_tile = Tile(9, 8, screen, current_position[0], current_position[1])
+        temp_tile.show_vertical()
+
+#----------------------------------------------------------------------------
+
 def initialize(screen):
     """
     initialize(screen)
@@ -210,27 +232,6 @@ def initialize(screen):
     #draw the background and dominos tiles on the screen
     draw_bg(screen)
     draw_tiles(screen)
-
-#----------------------------------------------------------------------------
-
-def draw_tiles(screen):
-    """
-    draw_tiles()
-        this function draws both computer's and human's tiles
-    """
-    #Print the human Tiles on the screen
-    for i in range(len(HUMAN_TILES)):
-        current_tile = HUMAN_TILES[i][0]
-        current_position = HUMAN_TILES[i][1]
-        temp_tile = Tile(current_tile[0], current_tile[1], screen, current_position[0], current_position[1])
-        temp_tile.show_vertical()
-
-    #Print the Computer Tiles (up-side-down)
-    # TODO (DONE) changing the Computer tiles image
-    for i in range(len(COMPUTER_TILES)):
-        current_position = COMPUTER_TILES[i][1]
-        temp_tile = Tile(9, 8, screen, current_position[0], current_position[1])
-        temp_tile.show_vertical()
 
 #----------------------------------------------------------------------------
 
@@ -707,17 +708,80 @@ def computer_play(auto_player, screen):
 
         #If the human said "PASS" last time, End the game
         if __PASS__ == 1 :
-            END_GAME()
+            END_GAME(screen)
 
         #If the human didn't say "PASS" last time, set __PASS__ to 1
         else :
             __PASS__ = 1
+
+
+    #check if the human can't play.
+    if not human_has_suitable_tile() :
+
+        #if the computer passed last time, then the game is ended
+        if __PASS__ == 1 :
+            END_GAME(screen)
+
+        #if the game isn't ended, change the pass button image to green
+        else :
+            switch_pass_button("enable", screen)
 
 #----------------------------------------------------------------------------
 
 def hide_tile(x, y, screen):
     hiding_rectangle = Rect(x, y, 34, 68)
     pygame.draw.rect(screen, HIDE_TILE_COLOR, hiding_rectangle)
+
+#----------------------------------------------------------------------------
+
+def clear_area(x, y, width, height, screen, fill_color):
+    hiding_rectangle = Rect(x, y, width, height)
+    pygame.draw.rect(screen, fill_color, hiding_rectangle)
+
+#----------------------------------------------------------------------------
+
+def switch_pass_button(action, screen):
+
+    #initialize the PASS_BUTTON_STATUS as global variable
+    global PASS_BUTTON_STATUS
+
+    #the action is to disable pass button
+    if action == "enable" :
+
+        #clear the place of the pass button
+        clear_area(PASS_BUTTON_PLACE[0], PASS_BUTTON_PLACE[1], 99, 44, screen, OUTER_COLOR)
+
+        #change the pass button image back to green
+        pass_button_image = pygame.image.load("images/active_pass.png")
+        screen.blit(pass_button_image, (PASS_BUTTON_PLACE[0], PASS_BUTTON_PLACE[1]))
+
+        #change the PASS_BUTTON_STATUS to be enabled
+        PASS_BUTTON_STATUS = 1
+
+        #refresh the display
+        pygame.display.update()
+
+
+    #the action is to enable the pass button
+    elif action == "disable" :
+
+        #clear the place of the pass button
+        clear_area(PASS_BUTTON_PLACE[0], PASS_BUTTON_PLACE[1], 99, 44, screen, OUTER_COLOR)
+
+        #change the pass button image back to red
+        pass_button_image = pygame.image.load("images/deactive_pass.png")
+        screen.blit(pass_button_image, (PASS_BUTTON_PLACE[0], PASS_BUTTON_PLACE[1]))
+
+        #change the PASS_BUTTON_STATUS to be disabled
+        PASS_BUTTON_STATUS = 0
+
+        #refresh the display
+        pygame.display.update()
+
+
+    #if the programmer didn't pass the action correctly
+    else :
+        raise ValueError
 
 #----------------------------------------------------------------------------
 
@@ -760,24 +824,24 @@ def score_count(WHOS_TILE):
 
 #----------------------------------------------------------------------------
 
-def END_GAME():
-    
+def END_GAME(screen):
+
     #constructing game_over_bg designs
     game_over_bg = pygame.image.load("images/game_over_bg.png")
     won_game_img = pygame.image.load("images/you_won_img.png")
     lose_game_img = pygame.image.load("images/you_lose_img.png")
     game_drawn_img = pygame.image.load("images/drawn_img.png")
     button_highlight_img = pygame.image.load("images/on_clicked_button.png")
-    
-    #constructing sounds 
+
+    #constructing sounds
     winner_sound = path.join('sounds','game_over_win.wav')
     winner_soundtrack = pygame.mixer.Sound(winner_sound)
     winner_soundtrack.set_volume(0.9)
-    
+
     loser_sound = path.join('sounds','game_over_lose.wav')
     loser_soundtrack = pygame.mixer.Sound(loser_sound)
     loser_soundtrack.set_volume(0.9)
-    
+
     nonwinner_sound = path.join('sounds','none_winer.wav')
     nonwinner_soundtrack = pygame.mixer.Sound(nonwinner_sound)
     nonwinner_soundtrack.set_volume(0.9)
@@ -785,11 +849,11 @@ def END_GAME():
     replay_sound = path.join('sounds','replay.wav')
     replay_soundtrack = pygame.mixer.Sound(replay_sound)
     replay_soundtrack.set_volume(0.9)
-    
+
     cancelReplay_sound = path.join('sounds','cancel_replay.wav')
     cancelReplay_soundtrack = pygame.mixer.Sound(cancelReplay_sound)
     cancelReplay_soundtrack.set_volume(0.9)
-    
+
     # constructing x,y for the game_over_bg
     draw_x = main_window_resolution[0]/2 - 252
     draw_y = main_window_resolution[1]/2 - 173
@@ -799,87 +863,48 @@ def END_GAME():
 
     #set the GAME_OVER flag to on
     GAME_OVER = 1
-    human_score = score_count(HUMAN_TILES)    
+    human_score = score_count(HUMAN_TILES)
     computer_score = score_count(COMPUTER_TILES)
-    
-    
+
+
     #if the human won
     x,y = pygame.mouse.get_pos()
     if human_score < computer_score :
             winner_soundtrack.play(0)
             screen.blit(game_over_bg,(draw_x,draw_y))
-            screen.blit(won_game_img,(draw_x/2+200,draw_y/2+290))
-            #
-            ##TODO:MAKE THE EVENT WORK
-            #
-            for event in pygame.event.get():
-                if event.type == MOUSEBUTTONDOWN:
-                    if x >= (draw_x/2+189) and x <= (draw_x/2+303) and y >= (draw_y/2+354) and y<= (draw_y/2+391):
-                        screen.blit(button_highlight_img,(draw_x/2+189,draw_y/2+354))
-                        cancelReplay_soundtrack.play(1)
-                        pygame.time.wait(500)
-                        exit()
-                    if x >= (draw_x/2+352) and x <= (draw_x/2+466) and y >= (draw_y/2+354) and y<= (draw_y/2+391):
-                        screen.blit(button_highlight_img,(draw_x/2+352,draw_y/2+354))
-                        replay_sound.play(1)
-                        pygame.time.wait(500)
-                        pass
-        
+            screen.blit(won_game_img,(draw_x + 120, draw_y + 220))
 
     #if the computer won
     elif human_score > computer_score :
             loser_soundtrack.play(0)
             screen.blit(game_over_bg,(draw_x,draw_y))
-            screen.blit(lose_game_img,(draw_x/2+220,draw_y/2+285))
-            #
-            ##TODO:MAKE THE EVENT WORK
-            #
-            for event in pygame.event.get():
-                if event.type == MOUSEBUTTONDOWN:
-                    if x >= (draw_x/2+189) and x <= (draw_x/2+303) and y >= (draw_y/2+354) and y<= (draw_y/2+391):
-                        screen.blit(button_highlight_img,(draw_x/2+189,draw_y/2+354))
-                        cancelReplay_soundtrack.play(1)
-                        pygame.time.wait(500)
-                        exit()
-                    if x >= (draw_x/2+352) and x <= (draw_x/2+466) and y >= (draw_y/2+354) and y<= (draw_y/2+391):
-                        screen.blit(button_highlight_img,(draw_x/2+352,draw_y/2+354))
-                        replay_sound.play(1)
-                        pygame.time.wait(500)
-                        pass            
+            screen.blit(lose_game_img,(draw_x + 141, draw_y + 220))
+
     #if the game ended draw
     else :
             nonwinner_soundtrack.play(0)
             screen.blit(game_over_bg,(draw_x,draw_y))
-            screen.blit(game_drawn_img,(draw_x/2+260,draw_y/2+285))
-            #
-            ##TODO:MAKE THE EVENT WORK
-            #
-            for event in pygame.event.get():
-                if event.type == MOUSEBUTTONDOWN:
-                    if x >= (draw_x/2+189) and x <= (draw_x/2+303) and y >= (draw_y/2+354) and y<= (draw_y/2+391):
-                        screen.blit(button_highlight_img,(draw_x/2+189,draw_y/2+354))
-                        cancelReplay_soundtrack.play(1)
-                        pygame.time.wait(500)
-                        exit()
-                    if x >= (draw_x/2+352) and x <= (draw_x/2+466) and y >= (draw_y/2+354) and y<= (draw_y/2+391):
-                        screen.blit(button_highlight_img,(draw_x/2+352,draw_y/2+354))
-                        replay_sound.play(1)
-                        pygame.time.wait(500)
-                        pass
-    
+            screen.blit(game_drawn_img,(draw_x + 187, draw_y + 220))
+
+
     #constructing the fornt score_text and render it to the screen
     font = pygame.font.SysFont("arial", 25)
-    screen.blit(font.render(str(human_score),True,(0,0,0)),(draw_x/2+430,draw_y/2+175))
-    screen.blit(font.render(str(computer_score),True,(0,0,0)),(draw_x/2+430,draw_y/2+225))
-    
+    screen.blit(font.render(str(human_score),True,(0,0,0)),(draw_x + 365,draw_y + 113))
+    screen.blit(font.render(str(computer_score),True,(0,0,0)),(draw_x + 365,draw_y + 166))
+
+#----------------------------------------------------------------------------
+
+def RESET_GAME():
+    pass
+
 #----------------------------------------------------------------------------
 
 def main():
 
-    #identify the __PASS__, GAME_OVER variable as global
+    #identify the global variables
     global __PASS__
     global GAME_OVER
-    global screen
+
     #Initialize PyGame
     pygame.init()
 
@@ -893,7 +918,7 @@ def main():
     playedtile_sound = path.join('sounds','playedtile.wav')
     playedtile_soundtrack = pygame.mixer.Sound(playedtile_sound)
     playedtile_soundtrack.set_volume(0.9)
-    
+
     #initialize the game
     initialize(screen)
     auto_player = computer(COMPUTER_TILES)
@@ -917,15 +942,36 @@ def main():
                 #get the mouse position
                 x,y = pygame.mouse.get_pos()
 
-                if x > EXIT_BUTTON_PLACE[0]\
-                 and x < (EXIT_BUTTON_PLACE[0] + 81) and y > EXIT_BUTTON_PLACE[1]\
-                  and y< (EXIT_BUTTON_PLACE[1] + 29) :
+                #get the place of the POP UP message
+                popup_x = main_window_resolution[0]/2 - 252
+                popup_y = main_window_resolution[1]/2 - 173
 
+                #if the player clicked on the exit button in the main window
+                if x > EXIT_BUTTON_PLACE[0] and x < (EXIT_BUTTON_PLACE[0] + 81)\
+                 and y > EXIT_BUTTON_PLACE[1] and y< (EXIT_BUTTON_PLACE[1] + 29) :
+
+                    ###
+                    #TODO: remove this actions and just exit quietly
+                    ###
                     pressed_exit = pygame.image.load("images/pressed_exit.png")
                     screen.blit(pressed_exit,(EXIT_BUTTON_PLACE[0], EXIT_BUTTON_PLACE[1]))
                     pygame.display.update()
                     pygame.time.wait(100)
                     exit()
+
+                #if the player clicked on the exit button on the POP UP message
+                elif x > (popup_x + 113) and x < (popup_x + 230)\
+                 and y > (popup_y + 286) and y< (popup_y + 334) :
+
+                    #exit the game
+                    exit()
+
+                #if the player clicked on the replay button on the POP UP message
+                elif x > (popup_x + 276) and x < (popup_x + 310)\
+                 and y > (popup_y + 286) and y< (popup_y + 334) :
+
+                    #reset the game
+                    RESET_GAME()
 
             #if the user didn't click on the exit button,
             #refresh the display and ignore any other actions
@@ -943,10 +989,8 @@ def main():
             if x > REPLAY_BUTTON_PLACE[0] and x < (REPLAY_BUTTON_PLACE[0] + 81)\
              and y > REPLAY_BUTTON_PLACE[1] and y< (REPLAY_BUTTON_PLACE[1] + 29) :
 
-                pressed_replay = pygame.image.load("images/pressed_replay.png")
-                screen.blit(pressed_replay,(REPLAY_BUTTON_PLACE[0], REPLAY_BUTTON_PLACE[1]))
-                #pygame.time.wait(300)
-                pass
+                #reset the game
+                RESET_GAME()
 
 
             #Checking whether the user clicked on a the EXIT button
@@ -972,15 +1016,23 @@ def main():
                 else :
                     #check if the __PASS__ flag is ON, end the game
                     if __PASS__ == 1 :
-                        END_GAME()
+                        END_GAME(screen)
 
                     else :
 
                         #set the __PASS__ flag to on
                         __PASS__ = 1
 
+                        #disable the pass button
+                        switch_pass_button("disable", screen)
+
                         #ask the computer to play
                         computer_play(auto_player, screen)
+
+                        #check if the computer finished his tiles, end the game
+                        if len(COMPUTER_TILES) == 0 :
+                            END_GAME(screen)
+                            continue
 
 
             #check if the user clicked on a tile
@@ -1011,7 +1063,7 @@ def main():
 
                             #check if the human finished his tiles, end the game
                             if len(HUMAN_TILES) == 0 :
-                                END_GAME()
+                                END_GAME(screen)
                                 continue
 
                             #ask the computer to play
@@ -1019,8 +1071,19 @@ def main():
 
                             #check if the computer finished his tiles, end the game
                             if len(COMPUTER_TILES) == 0 :
-                                END_GAME()
+                                END_GAME(screen)
                                 continue
+
+                            #check if the human can't play.
+                            elif not human_has_suitable_tile() :
+
+                                #if the computer passed last time, then the game is ended
+                                if __PASS__ == 1 :
+                                    END_GAME(screen)
+
+                                #if the game isn't ended, change the pass button image to green
+                                else :
+                                    switch_pass_button("enable", screen)
 
                         #if the user clicked on a NON-SUITABLE tile
                         ###
@@ -1036,6 +1099,5 @@ def main():
 #run the game if the module was called independently
 if __name__ == "__main__":
     main()
-    
-    
-    
+
+
