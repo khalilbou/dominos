@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from reportlab.pdfbase.pdfdoc import BasicFonts
 
 #------------------IMPORTS------------------------
 import pygame
@@ -8,6 +9,7 @@ from sys import exit
 from time import sleep
 from computer import *
 from Tile import *
+from os import path
 
 #------------------Constants----------------------
 main_window_resolution = (800, 600)
@@ -759,37 +761,117 @@ def score_count(WHOS_TILE):
 #----------------------------------------------------------------------------
 
 def END_GAME():
+    
+    #constructing game_over_bg designs
+    game_over_bg = pygame.image.load("images/game_over_bg.png")
+    won_game_img = pygame.image.load("images/you_won_img.png")
+    lose_game_img = pygame.image.load("images/you_lose_img.png")
+    game_drawn_img = pygame.image.load("images/drawn_img.png")
+    button_highlight_img = pygame.image.load("images/on_clicked_button.png")
+    
+    #constructing sounds 
+    winner_sound = path.join('sounds','game_over_win.wav')
+    winner_soundtrack = pygame.mixer.Sound(winner_sound)
+    winner_soundtrack.set_volume(0.9)
+    
+    loser_sound = path.join('sounds','game_over_lose.wav')
+    loser_soundtrack = pygame.mixer.Sound(loser_sound)
+    loser_soundtrack.set_volume(0.9)
+    
+    nonwinner_sound = path.join('sounds','none_winer.wav')
+    nonwinner_soundtrack = pygame.mixer.Sound(nonwinner_sound)
+    nonwinner_soundtrack.set_volume(0.9)
+
+    replay_sound = path.join('sounds','replay.wav')
+    replay_soundtrack = pygame.mixer.Sound(replay_sound)
+    replay_soundtrack.set_volume(0.9)
+    
+    cancelReplay_sound = path.join('sounds','cancel_replay.wav')
+    cancelReplay_soundtrack = pygame.mixer.Sound(cancelReplay_sound)
+    cancelReplay_soundtrack.set_volume(0.9)
+    
+    # constructing x,y for the game_over_bg
+    draw_x = main_window_resolution[0]/2 - 252
+    draw_y = main_window_resolution[1]/2 - 173
 
     #identify GAME_OVER as global variable
     global GAME_OVER
 
     #set the GAME_OVER flag to on
     GAME_OVER = 1
-
-    human_score = score_count(HUMAN_TILES)
+    human_score = score_count(HUMAN_TILES)    
     computer_score = score_count(COMPUTER_TILES)
-
-    #print report to the user
-    print "GAME OVER!"
-    print "Your Count = ", human_score
-    print "Computer's Count = ", computer_score
-
+    
+    
     #if the human won
+    x,y = pygame.mouse.get_pos()
     if human_score < computer_score :
-        print "\n\nMAN!! YOU WON!"
+            winner_soundtrack.play(0)
+            screen.blit(game_over_bg,(draw_x,draw_y))
+            screen.blit(won_game_img,(draw_x/2+200,draw_y/2+290))
+            #
+            ##TODO:MAKE THE EVENT WORK
+            #
+            for event in pygame.event.get():
+                if event.type == MOUSEBUTTONDOWN:
+                    if x >= (draw_x/2+189) and x <= (draw_x/2+303) and y >= (draw_y/2+354) and y<= (draw_y/2+391):
+                        screen.blit(button_highlight_img,(draw_x/2+189,draw_y/2+354))
+                        cancelReplay_soundtrack.play(1)
+                        pygame.time.wait(500)
+                        exit()
+                    if x >= (draw_x/2+352) and x <= (draw_x/2+466) and y >= (draw_y/2+354) and y<= (draw_y/2+391):
+                        screen.blit(button_highlight_img,(draw_x/2+352,draw_y/2+354))
+                        replay_sound.play(1)
+                        pygame.time.wait(500)
+                        pass
+        
 
     #if the computer won
     elif human_score > computer_score :
-        print "\n\nYOU LOSE"
-
+            loser_soundtrack.play(0)
+            screen.blit(game_over_bg,(draw_x,draw_y))
+            screen.blit(lose_game_img,(draw_x/2+220,draw_y/2+285))
+            #
+            ##TODO:MAKE THE EVENT WORK
+            #
+            for event in pygame.event.get():
+                if event.type == MOUSEBUTTONDOWN:
+                    if x >= (draw_x/2+189) and x <= (draw_x/2+303) and y >= (draw_y/2+354) and y<= (draw_y/2+391):
+                        screen.blit(button_highlight_img,(draw_x/2+189,draw_y/2+354))
+                        cancelReplay_soundtrack.play(1)
+                        pygame.time.wait(500)
+                        exit()
+                    if x >= (draw_x/2+352) and x <= (draw_x/2+466) and y >= (draw_y/2+354) and y<= (draw_y/2+391):
+                        screen.blit(button_highlight_img,(draw_x/2+352,draw_y/2+354))
+                        replay_sound.play(1)
+                        pygame.time.wait(500)
+                        pass            
     #if the game ended draw
     else :
-        print "\n\nDRAW!!"
-
-##
-#TODO:making the animation
-##
-
+            nonwinner_soundtrack.play(0)
+            screen.blit(game_over_bg,(draw_x,draw_y))
+            screen.blit(game_drawn_img,(draw_x/2+260,draw_y/2+285))
+            #
+            ##TODO:MAKE THE EVENT WORK
+            #
+            for event in pygame.event.get():
+                if event.type == MOUSEBUTTONDOWN:
+                    if x >= (draw_x/2+189) and x <= (draw_x/2+303) and y >= (draw_y/2+354) and y<= (draw_y/2+391):
+                        screen.blit(button_highlight_img,(draw_x/2+189,draw_y/2+354))
+                        cancelReplay_soundtrack.play(1)
+                        pygame.time.wait(500)
+                        exit()
+                    if x >= (draw_x/2+352) and x <= (draw_x/2+466) and y >= (draw_y/2+354) and y<= (draw_y/2+391):
+                        screen.blit(button_highlight_img,(draw_x/2+352,draw_y/2+354))
+                        replay_sound.play(1)
+                        pygame.time.wait(500)
+                        pass
+    
+    #constructing the fornt score_text and render it to the screen
+    font = pygame.font.SysFont("arial", 25)
+    screen.blit(font.render(str(human_score),True,(0,0,0)),(draw_x/2+430,draw_y/2+175))
+    screen.blit(font.render(str(computer_score),True,(0,0,0)),(draw_x/2+430,draw_y/2+225))
+    
 #----------------------------------------------------------------------------
 
 def main():
@@ -797,7 +879,7 @@ def main():
     #identify the __PASS__, GAME_OVER variable as global
     global __PASS__
     global GAME_OVER
-
+    global screen
     #Initialize PyGame
     pygame.init()
 
@@ -808,9 +890,27 @@ def main():
     screen = pygame.display.set_mode(main_window_resolution, 0, 32)
     pygame.display.set_caption("Dominos!")
 
+    playedtile_sound = path.join('sounds','playedtile.wav')
+    playedtile_soundtrack = pygame.mixer.Sound(playedtile_sound)
+    playedtile_soundtrack.set_volume(0.9)
+    
     #initialize the game
     initialize(screen)
     auto_player = computer(COMPUTER_TILES)
+
+#########################################################
+#    game_over_bg = pygame.image.load("images/game_over_bg.png")
+#    won_game_img = pygame.image.load("images/you_won_img.png")
+#    lose_game_img = pygame.image.load("images/you_lose_img.png")
+#    game_drawn_img = pygame.image.load("images/drawn_img.png")
+#    button_highlight_img = pygame.image.load("images/on_clicked_button.png")
+#    
+#    draw_x = main_window_resolution[0]/2 - 252
+#    draw_y = main_window_resolution[1]/2 - 173
+#    
+#    x,y = pygame.mouse.get_pos()
+#    
+#########################################################
 
 #####################  MAIN LOOP  #######################
 
@@ -911,6 +1011,7 @@ def main():
 
                         #if the user clicked on a suitable
                         if result is not None :
+                            playedtile_soundtrack.play(0)
                             play(result[0], screen, result[1])
                             HUMAN_TILES.remove(tile)
                             hide_tile(tile[1][0], tile[1][1], screen)
@@ -949,3 +1050,6 @@ def main():
 #run the game if the module was called independently
 if __name__ == "__main__":
     main()
+    
+    
+    
