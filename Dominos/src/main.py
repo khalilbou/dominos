@@ -898,20 +898,6 @@ def main():
     initialize(screen)
     auto_player = computer(COMPUTER_TILES)
 
-#########################################################
-#    game_over_bg = pygame.image.load("images/game_over_bg.png")
-#    won_game_img = pygame.image.load("images/you_won_img.png")
-#    lose_game_img = pygame.image.load("images/you_lose_img.png")
-#    game_drawn_img = pygame.image.load("images/drawn_img.png")
-#    button_highlight_img = pygame.image.load("images/on_clicked_button.png")
-#    
-#    draw_x = main_window_resolution[0]/2 - 252
-#    draw_y = main_window_resolution[1]/2 - 173
-#    
-#    x,y = pygame.mouse.get_pos()
-#    
-#########################################################
-
 #####################  MAIN LOOP  #######################
 
     while True:
