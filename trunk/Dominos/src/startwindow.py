@@ -45,7 +45,7 @@ class splashWindow(object):
                     x,y = pygame.mouse.get_pos()
                     if x >= 172 and x <= 320 and y >= 435 and y<=480:
                         start_screen.blit(onenjoy_clicked_img,(190,438))
-                        enjoyTick.play(1)
+                        enjoyTick.play(0)
                         pygame.display.update()
                         pygame.time.wait(500)
                         main()
@@ -58,11 +58,11 @@ class splashWindow(object):
                 
                 if event.type == KEYDOWN:
                     if event.key == K_KP_ENTER or event.key == K_SPACE:
-                        enjoyTick.play(1)
+                        enjoyTick.play(0)
                         main()
                         
                     if event.key == K_ESCAPE:
-                        quitTick.play(1)
+                        quitTick.play(0)
                         exit()
                         
             
