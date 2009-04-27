@@ -13,6 +13,6 @@ What is Dominoes?
 
 Python Programming language.
 
-Open Source and GPL.
+[http://code.google.com/p/dominos/wiki/OpenSource OpenSource]
 
 Tools and Resources. 
