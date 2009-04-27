@@ -13,10 +13,8 @@ the project is under GPL (GNU General Public Licensee ) to get the advantage of 
 
       * What is [Dominoes]
 
-      *  Python Programming language.
-
       * [http://code.google.com/p/dominos/wiki/OpenSource OpenSource]
 
-      *   Tools and Resources.
+      * [Tools] and Resources.
   
-      *   [Team] OF Work
+      * [Team] OF Work
