@@ -15,6 +15,8 @@ so we'll be using:
 
 • Synfig program as an alternative to Adobe Flash to make flash works
 
+•Inkscape : Vector Graphics Processor
+
 • gimp : photo Editor
 
 • we're using all of the previous tools under Linux operating system
