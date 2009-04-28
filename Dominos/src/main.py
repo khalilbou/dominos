@@ -694,6 +694,7 @@ def computer_play(auto_player, screen):
     if chosen_tile != "PASS" :
         final_tile = tile_check(chosen_tile[0])
         pygame.time.wait(1000)
+        pygame.event.clear()
         play(final_tile[0], screen, final_tile[1])
         hide_tile(chosen_tile[1][0], chosen_tile[1][1], screen)
 
