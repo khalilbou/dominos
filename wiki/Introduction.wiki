@@ -13,7 +13,7 @@ the project is under GPL (GNU General Public Licensee ) to get the advantage of 
 
       * What is [Dominoes]
 
-      * [http://code.google.com/p/dominos/wiki/OpenSource OpenSource]
+      * [OpenSource]
 
       * [Tools] and Resources.
   
