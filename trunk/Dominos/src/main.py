@@ -11,7 +11,7 @@ from Tile import *
 from os import path
 
 #------------------Constants----------------------
-main_window_resolution = (1024, 768)
+main_window_resolution = (800, 600)
 
 HIDE_TILE_COLOR = (140,95,22)
 
@@ -176,7 +176,7 @@ def draw_bg(screen):
     pygame.display.update()
 
 #----------------------------------------------------------------------------
-
+    
 def draw_tiles(screen):
     """
     draw_tiles()
@@ -688,6 +688,10 @@ def computer_play(auto_player, screen):
 
     #identify __PASS__ as global variable
     global __PASS__
+    
+    playedtile_sound = path.join('sounds','playedtile.wav')
+    playedtile_soundtrack = pygame.mixer.Sound(playedtile_sound)
+    playedtile_soundtrack.set_volume(0.9)
 
     #Ask the computer to play
     chosen_tile = auto_player.play(PLAYED_TILES)
@@ -696,6 +700,7 @@ def computer_play(auto_player, screen):
         pygame.time.wait(1000)
         pygame.event.clear()
         play(final_tile[0], screen, final_tile[1])
+        playedtile_soundtrack.play(0)
         hide_tile(chosen_tile[1][0], chosen_tile[1][1], screen)
 
         #set the __PASS__ flag to off
@@ -904,6 +909,10 @@ def main():
     #identify the global variables
     global __PASS__
     global GAME_OVER
+    
+    #note message coordinates 
+    note_x = main_window_resolution[0]/2 - 196  
+    note_y = main_window_resolution[1] - main_window_resolution[1]/4 -35
 
     #Initialize PyGame
     pygame.init()
@@ -912,10 +921,13 @@ def main():
     seticon('images/icon.png')
 
     #create the Main window
-    screen = pygame.display.set_mode(main_window_resolution, FULLSCREEN, 32)
+    screen = pygame.display.set_mode(main_window_resolution,0, 32)
     pygame.display.set_caption("Dominos!")
 
     button_highlight_img = pygame.image.load("images/on_clicked_button.png")
+    note1_img = pygame.image.load("images/note1.png")
+    note2_img = pygame.image.load("images/note2.png")
+    clear_img = pygame.image.load("images/clear.png")
 
     cancelReplay_sound = path.join('sounds','cancel_replay.wav')
     cancelReplay_soundtrack = pygame.mixer.Sound(cancelReplay_sound)
@@ -928,6 +940,10 @@ def main():
     replay_sound = path.join('sounds','replay.wav')
     replay_soundtrack = pygame.mixer.Sound(replay_sound)
     replay_soundtrack.set_volume(0.9)
+    
+    note_sound = path.join('sounds','note.wav')
+    note_soundtrack = pygame.mixer.Sound(note_sound)
+    note_soundtrack.set_volume(0.9)
 
     #initialize the game
     initialize(screen)
@@ -1026,7 +1042,14 @@ def main():
 
                 #if the human has any suitable tiles to play, ignore him
                 if human_has_suitable_tile() :
-                    print "HEY!! Don't fool with me, You have some tiles to be played"
+                    note_soundtrack.play(0)
+                    screen.blit(note1_img,(note_x,note_y))
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                    screen.blit(clear_img,(note_x,note_y))
+                    
+                    
+                    
 
                 #if the human DOESN'T have any suitable tiles to played.
                 else :
@@ -1106,7 +1129,13 @@ def main():
                         #TODO: play some bad sound
                         ###
                         else :
-                            print "this is not a suitable tile"
+                            note_soundtrack.play(0)
+                            screen.blit(note2_img,(note_x,note_y))
+                            pygame.display.update()
+                            pygame.time.wait(2000)
+                            screen.blit(clear_img,(note_x,note_y))
+                            
+                            
 
 
         pygame.display.update()
