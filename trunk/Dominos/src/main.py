@@ -938,7 +938,10 @@ def check_if_clicked_on_exit(screen, x, y, check_for_popup = 0):
     if x > REPLAY_BUTTON_PLACE[0] and x < (REPLAY_BUTTON_PLACE[0] + 81)\
      and y > REPLAY_BUTTON_PLACE[1] and y< (REPLAY_BUTTON_PLACE[1] + 29) :
 
-        #reset the game
+        pressed_replay = pygame.image.load("images/pressed_replay.png")
+        screen.blit(pressed_replay, (REPLAY_BUTTON_PLACE[0], REPLAY_BUTTON_PLACE[1]))
+        pygame.display.update()
+        pygame.time.wait(100)
         RESET_GAME()
 
 
