@@ -41,6 +41,11 @@ this_is_first_RIGHT_tile = 1
 
 GAME_OVER = 0
 
+BOTH_SIDES = 0
+
+ARGUMENTATIVE_TILE = None
+ARGUMENTATIVE_RESULT = None
+
 PASS_BUTTON_STATUS = 0
 
 #----------------------------------------------------------------------------
@@ -176,7 +181,7 @@ def draw_bg(screen):
     pygame.display.update()
 
 #----------------------------------------------------------------------------
-    
+
 def draw_tiles(screen):
     """
     draw_tiles()
@@ -252,51 +257,77 @@ def clicked_on_tile(mouse_position, tile_position):
 #----------------------------------------------------------------------------
 
 def tile_check(tile):
-    """
-    human_tile_check(tile)
-        Takes a tile as a tuple, and returns a tuple of (tile, position)
-        which "tile" is the suitable tile, and position is "left"
-        or "right" or None (if this is the first tile).
 
-        syntax:
-        >>> [[(tilex,tiley),(posx,posy)],[(tilex,tiley),(posx,posy)],[(tilex,tiley),(posx,posy)]]
-
-        example for last tile played on the right
-        >>> b=[[(0,1),(100,200)],[(0,2),(300,400)],[(0,3),(500,600)]]
-        >>> print b[-1][0][1]
-        3
-        represented the tiley (second_tile_value) for the last tile played on the right
-
-        example for last tile played on the left
-        >>> print b[0][0][0]
-        0
-        represented the tilex (first_tile_value) for the last tile played on the left
-    """
+    right = 0
+    left = 0
+    right_flip = 0
+    left_flip = 0
 
     #If this is the first tile to be played
     if len(PLAYED_TILES) == 0 :
         return tile, None
 
     #check if the tile can be played on the right
-    elif tile[0] == PLAYED_TILES[-1][0][1] :
-        return tile, "right"
+    if tile[0] == PLAYED_TILES[-1][0][1] :
+        right = 1
+
     elif tile[1] == PLAYED_TILES[-1][0][1] :
-        return (tile[1], tile[0]), "right"
+        right = 1
+        right_flip = 1
 
     #check if the tile can be played on the left
-    elif tile[1] == PLAYED_TILES[0][0][0] :
-        return tile, "left"
+    if tile[1] == PLAYED_TILES[0][0][0] :
+        left = 1
+
     elif tile[0] == PLAYED_TILES[0][0][0] :
-        return (tile[1], tile[0]), "left"
+        left = 1
+        left_flip = 1
+
+
+    #If the tile can be played on both sides
+    if (right == 1) and (left == 1) :
+
+        #construct empty result list
+        result = []
+
+        #Manage the right side
+        if right_flip == 1 :
+            result.extend([(tile[1], tile[0]), "right"])
+
+        else :
+            result.extend([tile, "right"])
+
+        #Manage the left side
+        if left_flip == 1 :
+            result.extend([(tile[1], tile[0]), "left"])
+
+        else :
+            result.extend([tile, "left"])
+
+        #return the result
+        return result
+
+
+    #If the tile can be played on the right side only
+    elif right == 1 :
+        if right_flip == 1 :
+            return (tile[1], tile[0]), "right"
+        else :
+            return tile, "right"
+
+    #If the tile can be played on the left side only
+    elif left == 1 :
+        if left_flip == 1 :
+            return (tile[1], tile[0]), "left"
+        else :
+            return tile, "left"
 
     #If the tile isn't suitable
     else :
         return None
 
 #----------------------------------------------------------------------------
-# TODO Add animation SOMEHOW!!!
-# TODO make the can be played left and can be played right in the same turn
-#ask the player where to play his tiles
+
 def play(tile, screen, place = None):
     """
     play(tile, screen, place)
@@ -486,7 +517,7 @@ def play(tile, screen, place = None):
 
                     #the previous tile was DUO
                     if previous_tile_is_DUO :
-                        tile_x = previous_position[0] + 70
+                        tile_x = previous_position[0] + 36
                         tile_y = previous_position[1] + 17
                         reverse_tile = 1
 
@@ -688,13 +719,14 @@ def computer_play(auto_player, screen):
 
     #identify __PASS__ as global variable
     global __PASS__
-    
+
     playedtile_sound = path.join('sounds','playedtile.wav')
     playedtile_soundtrack = pygame.mixer.Sound(playedtile_sound)
     playedtile_soundtrack.set_volume(0.9)
 
     #Ask the computer to play
     chosen_tile = auto_player.play(PLAYED_TILES)
+
     if chosen_tile != "PASS" :
         final_tile = tile_check(chosen_tile[0])
         pygame.time.wait(1000)
@@ -715,6 +747,7 @@ def computer_play(auto_player, screen):
         #If the human said "PASS" last time, End the game
         if __PASS__ == 1 :
             END_GAME(screen)
+            return
 
         #If the human didn't say "PASS" last time, set __PASS__ to 1
         else :
@@ -731,6 +764,54 @@ def computer_play(auto_player, screen):
         #if the game isn't ended, change the pass button image to green
         else :
             switch_pass_button("enable", screen)
+
+#----------------------------------------------------------------------------
+
+def human_play(tile, exact_tile, screen, position, auto_player):
+
+    global __PASS__
+
+    playedtile_sound = path.join('sounds','playedtile.wav')
+    playedtile_soundtrack = pygame.mixer.Sound(playedtile_sound)
+    playedtile_soundtrack.set_volume(0.9)
+
+    #play the human tile
+    playedtile_soundtrack.play(0)
+    play(exact_tile, screen, position)
+    HUMAN_TILES.remove(tile)
+    hide_tile(tile[1][0], tile[1][1], screen)
+
+    #set the __PASS__ flag to off
+    __PASS__ = 0
+
+    #refresh the display before the computer plays
+    #because the computer will sleep for one second
+    pygame.display.update()
+
+    #check if the human finished his tiles, end the game
+    if len(HUMAN_TILES) == 0 :
+        END_GAME(screen)
+
+    #if the human didn't finish his tiles
+    else :
+
+        #ask the computer to play
+        computer_play(auto_player, screen)
+
+        #check if the computer finished his tiles, end the game
+        if len(COMPUTER_TILES) == 0 :
+            END_GAME(screen)
+
+        #check if the human can't play.
+        elif not human_has_suitable_tile() :
+
+            #if the computer passed last time, then the game is ended
+            if __PASS__ == 1 :
+                END_GAME(screen)
+
+            #if the game isn't ended, change the pass button image to green
+            else :
+                switch_pass_button("enable", screen)
 
 #----------------------------------------------------------------------------
 
@@ -820,6 +901,158 @@ def human_has_suitable_tile():
 
 #----------------------------------------------------------------------------
 
+def left_or_right(screen):
+
+    left_image = pygame.image.load("images/left.png")
+    right_image = pygame.image.load("images/right.png")
+
+    x1 = PASS_BUTTON_PLACE[0] + 5
+    y1 = PASS_BUTTON_PLACE[1] - 30
+
+    x2 = PASS_BUTTON_PLACE[0] + 62
+    y2 = PASS_BUTTON_PLACE[1] - 30
+
+    for i in range(2) :
+
+        screen.blit(left_image,(x1, y1))
+        screen.blit(right_image,(x2, y2))
+
+        pygame.display.update()
+
+        pygame.time.wait(200)
+
+        clear_area(x1, y1, 100, 22, screen, OUTER_COLOR)
+
+        pygame.display.update()
+
+        pygame.time.wait(200)
+
+    screen.blit(left_image,(x1, y1))
+    screen.blit(right_image,(x2, y2))
+
+#----------------------------------------------------------------------------
+
+def check_if_clicked_on_exit(screen, x, y, check_for_popup = 0):
+
+    #Checking whether the user clicked on the REPLAY button
+    if x > REPLAY_BUTTON_PLACE[0] and x < (REPLAY_BUTTON_PLACE[0] + 81)\
+     and y > REPLAY_BUTTON_PLACE[1] and y< (REPLAY_BUTTON_PLACE[1] + 29) :
+
+        #reset the game
+        RESET_GAME()
+
+
+    #Checking whether the user clicked on a the EXIT button
+    elif x > EXIT_BUTTON_PLACE[0] and x < (EXIT_BUTTON_PLACE[0] + 81)\
+     and y > EXIT_BUTTON_PLACE[1] and y< (EXIT_BUTTON_PLACE[1] + 29) :
+
+        pressed_exit = pygame.image.load("images/pressed_exit.png")
+        screen.blit(pressed_exit,(EXIT_BUTTON_PLACE[0], EXIT_BUTTON_PLACE[1]))
+        pygame.display.update()
+        pygame.time.wait(100)
+        exit()
+
+
+    #if the user want to check on the POPUP message too
+    if check_for_popup == 1 :
+
+        #Load the highlight image
+        button_highlight_img = pygame.image.load("images/on_clicked_button.png")
+
+        #load the needed sound files
+        replay_sound = path.join('sounds','replay.wav')
+        replay_soundtrack = pygame.mixer.Sound(replay_sound)
+        replay_soundtrack.set_volume(0.9)
+
+        cancelReplay_sound = path.join('sounds','cancel_replay.wav')
+        cancelReplay_soundtrack = pygame.mixer.Sound(cancelReplay_sound)
+        cancelReplay_soundtrack.set_volume(0.9)
+
+        #get the place of the POP UP message
+        popup_x = main_window_resolution[0]/2 - 252
+        popup_y = main_window_resolution[1]/2 - 173
+
+        #if the player clicked on the exit button on the POP UP message
+        if x > (popup_x + 113) and x < (popup_x + 230)\
+         and y > (popup_y + 286) and y< (popup_y + 334) :
+            screen.blit(button_highlight_img,(popup_x + 115,popup_y + 288))
+            cancelReplay_soundtrack.play(0)
+            pygame.display.update()
+            pygame.time.wait(100)
+            #exit the game
+            exit()
+
+        #if the player clicked on the replay button on the POP UP message
+        elif x > (popup_x + 278) and x < (popup_x + 395)\
+         and y > (popup_y + 288) and y< (popup_y + 336) :
+            screen.blit(button_highlight_img,(popup_x + 278,popup_y + 288))
+            replay_soundtrack.play(0)
+            pygame.display.update()
+            pygame.time.wait(500)
+            #reset the game
+            RESET_GAME()
+
+#----------------------------------------------------------------------------
+
+def check_if_clicked_on_pass(screen, auto_player, x, y):
+
+    global __PASS__
+
+    #Checking whether the user clicked on a the PASS button
+    if x > PASS_BUTTON_PLACE[0] and x < (PASS_BUTTON_PLACE[0] + 99)\
+     and y > PASS_BUTTON_PLACE[1] and y < (PASS_BUTTON_PLACE[1] + 44):
+
+        #if the human has any suitable tiles to play, ignore him
+        if human_has_suitable_tile() :
+
+            #load the required image
+            bad_pass = pygame.image.load("images/bad_pass.png")
+            clear_img = pygame.image.load("images/clear.png")
+
+            #note message coordinates
+            note_x = main_window_resolution[0]/2 - 196
+            note_y = main_window_resolution[1] - main_window_resolution[1]/4 -35
+
+            #load the sound file
+            note_sound = path.join('sounds','note.wav')
+            note_soundtrack = pygame.mixer.Sound(note_sound)
+            note_soundtrack.set_volume(0.9)
+
+            #view the note and play the sound
+            note_soundtrack.play(0)
+            screen.blit(bad_pass,(note_x, note_y))
+            pygame.display.update()
+            pygame.time.wait(2000)
+            screen.blit(clear_img,(note_x,note_y))
+
+        #if the human DOESN'T have any suitable tiles to played.
+        else :
+            #check if the __PASS__ flag is ON, end the game
+            if __PASS__ == 1 :
+                END_GAME(screen)
+
+            else :
+
+                #set the __PASS__ flag to on
+                __PASS__ = 1
+
+                #disable the pass button
+                switch_pass_button("disable", screen)
+
+                #ask the computer to play
+                computer_play(auto_player, screen)
+
+                #check if the computer finished his tiles, end the game
+                if len(COMPUTER_TILES) == 0 :
+                    END_GAME(screen)
+
+        return True
+
+    else :
+        return False
+
+#----------------------------------------------------------------------------
+
 def score_count(WHOS_TILE):
     tiles_length = len(WHOS_TILE)
     tiles_count = 0
@@ -838,27 +1071,6 @@ def END_GAME(screen):
     lose_game_img = pygame.image.load("images/you_lose_img.png")
     game_drawn_img = pygame.image.load("images/drawn_img.png")
 
-    #constructing sounds
-    winner_sound = path.join('sounds','game_over_win.wav')
-    winner_soundtrack = pygame.mixer.Sound(winner_sound)
-    winner_soundtrack.set_volume(0.9)
-
-    loser_sound = path.join('sounds','game_over_lose.wav')
-    loser_soundtrack = pygame.mixer.Sound(loser_sound)
-    loser_soundtrack.set_volume(0.9)
-
-    nonwinner_sound = path.join('sounds','none_winer.wav')
-    nonwinner_soundtrack = pygame.mixer.Sound(nonwinner_sound)
-    nonwinner_soundtrack.set_volume(0.9)
-
-    replay_sound = path.join('sounds','replay.wav')
-    replay_soundtrack = pygame.mixer.Sound(replay_sound)
-    replay_soundtrack.set_volume(0.9)
-
-    cancelReplay_sound = path.join('sounds','cancel_replay.wav')
-    cancelReplay_soundtrack = pygame.mixer.Sound(cancelReplay_sound)
-    cancelReplay_soundtrack.set_volume(0.9)
-
     # constructing x,y for the game_over_bg
     draw_x = main_window_resolution[0]/2 - 252
     draw_y = main_window_resolution[1]/2 - 173
@@ -868,31 +1080,47 @@ def END_GAME(screen):
 
     #set the GAME_OVER flag to on
     GAME_OVER = 1
+
+    #count both human's and computer's points
     human_score = score_count(HUMAN_TILES)
     computer_score = score_count(COMPUTER_TILES)
 
 
     #if the human won
-    x,y = pygame.mouse.get_pos()
     if human_score < computer_score :
-            winner_soundtrack.play(0)
-            screen.blit(game_over_bg,(draw_x,draw_y))
-            screen.blit(won_game_img,(draw_x + 120, draw_y + 220))
+
+        winner_sound = path.join('sounds','game_over_win.wav')
+        winner_soundtrack = pygame.mixer.Sound(winner_sound)
+        winner_soundtrack.set_volume(0.9)
+
+        winner_soundtrack.play(0)
+        screen.blit(game_over_bg,(draw_x,draw_y))
+        screen.blit(won_game_img,(draw_x + 120, draw_y + 220))
 
     #if the computer won
     elif human_score > computer_score :
-            loser_soundtrack.play(0)
-            screen.blit(game_over_bg,(draw_x,draw_y))
-            screen.blit(lose_game_img,(draw_x + 141, draw_y + 220))
+
+        loser_sound = path.join('sounds','game_over_lose.wav')
+        loser_soundtrack = pygame.mixer.Sound(loser_sound)
+        loser_soundtrack.set_volume(0.9)
+
+        loser_soundtrack.play(0)
+        screen.blit(game_over_bg,(draw_x,draw_y))
+        screen.blit(lose_game_img,(draw_x + 141, draw_y + 220))
 
     #if the game ended draw
     else :
-            nonwinner_soundtrack.play(0)
-            screen.blit(game_over_bg,(draw_x,draw_y))
-            screen.blit(game_drawn_img,(draw_x + 187, draw_y + 220))
+
+        nonwinner_sound = path.join('sounds','none_winer.wav')
+        nonwinner_soundtrack = pygame.mixer.Sound(nonwinner_sound)
+        nonwinner_soundtrack.set_volume(0.9)
+
+        nonwinner_soundtrack.play(0)
+        screen.blit(game_over_bg,(draw_x,draw_y))
+        screen.blit(game_drawn_img,(draw_x + 187, draw_y + 220))
 
 
-    #constructing the fornt score_text and render it to the screen
+    #constructing the font score_text and render it to the screen
     font = pygame.font.SysFont("arial", 25)
     screen.blit(font.render(str(human_score),True,(0,0,0)),(draw_x + 365,draw_y + 113))
     screen.blit(font.render(str(computer_score),True,(0,0,0)),(draw_x + 365,draw_y + 166))
@@ -909,9 +1137,12 @@ def main():
     #identify the global variables
     global __PASS__
     global GAME_OVER
-    
-    #note message coordinates 
-    note_x = main_window_resolution[0]/2 - 196  
+    global BOTH_SIDES
+    global ARGUMENTATIVE_TILE
+    global ARGUMENTATIVE_TILE_CHECK_RESULT
+
+    #note message coordinates
+    note_x = main_window_resolution[0]/2 - 196
     note_y = main_window_resolution[1] - main_window_resolution[1]/4 -35
 
     #Initialize PyGame
@@ -924,26 +1155,14 @@ def main():
     screen = pygame.display.set_mode(main_window_resolution,0, 32)
     pygame.display.set_caption("Dominos!")
 
-    button_highlight_img = pygame.image.load("images/on_clicked_button.png")
-    note1_img = pygame.image.load("images/note1.png")
-    note2_img = pygame.image.load("images/note2.png")
-    clear_img = pygame.image.load("images/clear.png")
-
-    cancelReplay_sound = path.join('sounds','cancel_replay.wav')
-    cancelReplay_soundtrack = pygame.mixer.Sound(cancelReplay_sound)
-    cancelReplay_soundtrack.set_volume(0.9)
-
-    playedtile_sound = path.join('sounds','playedtile.wav')
-    playedtile_soundtrack = pygame.mixer.Sound(playedtile_sound)
-    playedtile_soundtrack.set_volume(0.9)
-
-    replay_sound = path.join('sounds','replay.wav')
-    replay_soundtrack = pygame.mixer.Sound(replay_sound)
-    replay_soundtrack.set_volume(0.9)
-    
+    #load the sound file
     note_sound = path.join('sounds','note.wav')
     note_soundtrack = pygame.mixer.Sound(note_sound)
     note_soundtrack.set_volume(0.9)
+
+    #load needed images
+    bad_tile = pygame.image.load("images/bad_tile.png")
+    clear_img = pygame.image.load("images/clear.png")
 
     #initialize the game
     initialize(screen)
@@ -966,113 +1185,63 @@ def main():
             if event.type == MOUSEBUTTONDOWN :
 
                 #get the mouse position
-                x,y = pygame.mouse.get_pos()
+                x, y = event.pos
 
-                #get the place of the POP UP message
-                popup_x = main_window_resolution[0]/2 - 252
-                popup_y = main_window_resolution[1]/2 - 173
+                #check if the user clicked on the exit or replay buttons
+                check_if_clicked_on_exit(screen, x, y, 1)
 
-                #if the player clicked on the exit button in the main window
-                if x > EXIT_BUTTON_PLACE[0] and x < (EXIT_BUTTON_PLACE[0] + 81)\
-                 and y > EXIT_BUTTON_PLACE[1] and y< (EXIT_BUTTON_PLACE[1] + 29) :
 
-                    ###
-                    #TODO: remove this actions and just exit quietly
-                    ###
-                    pressed_exit = pygame.image.load("images/pressed_exit.png")
-                    screen.blit(pressed_exit,(EXIT_BUTTON_PLACE[0], EXIT_BUTTON_PLACE[1]))
+
+        #Handling the Mouse Events IF THE PLAYER CAN PLAY ON BOTH SIDES
+        elif BOTH_SIDES == 1 :
+
+            if event.type == MOUSEBUTTONDOWN :
+
+                #get the mouse position
+                x, y = event.pos
+
+                #check if the user clicked on the exit or replay buttons
+                check_if_clicked_on_exit(screen, x, y)
+
+                #get the place of the arrows
+                x1 = PASS_BUTTON_PLACE[0] + 5
+                y1 = PASS_BUTTON_PLACE[1] - 30
+                x2 = PASS_BUTTON_PLACE[0] + 62
+                y2 = PASS_BUTTON_PLACE[1] - 30
+
+                #if the user chose to play to the left
+                if x > x1 and x < (x1 + 30) and y > y1 and y < (y1 + 22) :
+
+                    #clear the arrows from the screen
+                    clear_area(x1, y1, 100, 22, screen, OUTER_COLOR)
                     pygame.display.update()
-                    pygame.time.wait(100)
-                    exit()
+                    BOTH_SIDES = 0
 
-                #if the player clicked on the exit button on the POP UP message
-                elif x > (popup_x + 113) and x < (popup_x + 230)\
-                 and y > (popup_y + 286) and y< (popup_y + 334) :
-                    screen.blit(button_highlight_img,(popup_x + 115,popup_y + 288))
-                    cancelReplay_soundtrack.play(0)
+                    human_play(ARGUMENTATIVE_TILE, ARGUMENTATIVE_RESULT[2], screen, ARGUMENTATIVE_RESULT[3], auto_player)
+
+                #if the user chose to play to the right
+                elif x > x2 and x < (x2 + 30) and y > y2 and y < (y2 + 22) :
+
+                    #clear the arrows from the screen
+                    clear_area(x1, y1, 100, 22, screen, OUTER_COLOR)
                     pygame.display.update()
-                    pygame.time.wait(100)
-                    #exit the game
-                    exit()
+                    BOTH_SIDES = 0
 
-                #if the player clicked on the replay button on the POP UP message
-                elif x > (popup_x + 278) and x < (popup_x + 395)\
-                 and y > (popup_y + 288) and y< (popup_y + 336) :
-                    screen.blit(button_highlight_img,(popup_x + 278,popup_y + 288))
-                    replay_soundtrack.play(0)
-                    pygame.display.update()
-                    pygame.time.wait(500)
-                    #reset the game
-                    RESET_GAME()
+                    human_play(ARGUMENTATIVE_TILE, ARGUMENTATIVE_RESULT[0], screen, ARGUMENTATIVE_RESULT[1], auto_player)
 
-            #if the user didn't click on the exit button,
-            #refresh the display and ignore any other actions
-            else :
-                pygame.display.update()
-                continue
+
 
         #Handling the Mouse Events IF THE GAME IS STILL RUNNING
         elif event.type == MOUSEBUTTONDOWN :
 
             #get the mouse position
-            x,y = pygame.mouse.get_pos()
+            x,y = event.pos
 
-            #Checking whether the user clicked on the REPLAY button
-            if x > REPLAY_BUTTON_PLACE[0] and x < (REPLAY_BUTTON_PLACE[0] + 81)\
-             and y > REPLAY_BUTTON_PLACE[1] and y< (REPLAY_BUTTON_PLACE[1] + 29) :
-
-                #reset the game
-                RESET_GAME()
-
-
-            #Checking whether the user clicked on a the EXIT button
-            elif x > EXIT_BUTTON_PLACE[0] and x < (EXIT_BUTTON_PLACE[0] + 81)\
-             and y > EXIT_BUTTON_PLACE[1] and y< (EXIT_BUTTON_PLACE[1] + 29) :
-
-                pressed_exit = pygame.image.load("images/pressed_exit.png")
-                screen.blit(pressed_exit,(EXIT_BUTTON_PLACE[0], EXIT_BUTTON_PLACE[1]))
-                pygame.display.update()
-                pygame.time.wait(100)
-                exit()
-
+            check_if_clicked_on_exit(screen, x, y)
 
             #Checking whether the user clicked on a the PASS button
-            elif x > PASS_BUTTON_PLACE[0] and x < (PASS_BUTTON_PLACE[0] + 99)\
-             and y > PASS_BUTTON_PLACE[1] and y < (PASS_BUTTON_PLACE[1] + 44):
-
-                #if the human has any suitable tiles to play, ignore him
-                if human_has_suitable_tile() :
-                    note_soundtrack.play(0)
-                    screen.blit(note1_img,(note_x,note_y))
-                    pygame.display.update()
-                    pygame.time.wait(2000)
-                    screen.blit(clear_img,(note_x,note_y))
-                    
-                    
-                    
-
-                #if the human DOESN'T have any suitable tiles to played.
-                else :
-                    #check if the __PASS__ flag is ON, end the game
-                    if __PASS__ == 1 :
-                        END_GAME(screen)
-
-                    else :
-
-                        #set the __PASS__ flag to on
-                        __PASS__ = 1
-
-                        #disable the pass button
-                        switch_pass_button("disable", screen)
-
-                        #ask the computer to play
-                        computer_play(auto_player, screen)
-
-                        #check if the computer finished his tiles, end the game
-                        if len(COMPUTER_TILES) == 0 :
-                            END_GAME(screen)
-                            continue
-
+            if check_if_clicked_on_pass(screen, auto_player, x, y):
+                continue
 
             #check if the user clicked on a tile
             else :
@@ -1086,56 +1255,24 @@ def main():
                         #check where to play the tile
                         result = tile_check(tile[0])
 
-                        #if the user clicked on a suitable
-                        if result is not None :
-                            playedtile_soundtrack.play(0)
-                            play(result[0], screen, result[1])
-                            HUMAN_TILES.remove(tile)
-                            hide_tile(tile[1][0], tile[1][1], screen)
-
-                            #set the __PASS__ flag to off
-                            __PASS__ = 0
-
-                            #refresh the display before the computer plays
-                            #because the computer will sleep for one second
-                            pygame.display.update()
-
-                            #check if the human finished his tiles, end the game
-                            if len(HUMAN_TILES) == 0 :
-                                END_GAME(screen)
-                                continue
-
-                            #ask the computer to play
-                            computer_play(auto_player, screen)
-
-                            #check if the computer finished his tiles, end the game
-                            if len(COMPUTER_TILES) == 0 :
-                                END_GAME(screen)
-                                continue
-
-                            #check if the human can't play.
-                            elif not human_has_suitable_tile() :
-
-                                #if the computer passed last time, then the game is ended
-                                if __PASS__ == 1 :
-                                    END_GAME(screen)
-
-                                #if the game isn't ended, change the pass button image to green
-                                else :
-                                    switch_pass_button("enable", screen)
-
                         #if the user clicked on a NON-SUITABLE tile
-                        ###
-                        #TODO: play some bad sound
-                        ###
-                        else :
+                        if result is None :
                             note_soundtrack.play(0)
-                            screen.blit(note2_img,(note_x,note_y))
+                            screen.blit(bad_tile,(note_x,note_y))
                             pygame.display.update()
                             pygame.time.wait(2000)
                             screen.blit(clear_img,(note_x,note_y))
-                            
-                            
+
+                        #if the user clicked on a suitable
+                        elif len(result) == 2 :
+                            human_play(tile, result[0], screen, result[1], auto_player)
+
+                        #if the tile can be played on both sides
+                        elif len(result) == 4 :
+                            BOTH_SIDES = 1
+                            ARGUMENTATIVE_TILE = tile
+                            ARGUMENTATIVE_RESULT = result
+                            left_or_right(screen)
 
 
         pygame.display.update()
