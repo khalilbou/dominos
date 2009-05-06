@@ -1128,7 +1128,65 @@ def END_GAME(screen):
 #----------------------------------------------------------------------------
 
 def RESET_GAME():
-    pass
+
+    global __PASS__
+    global NUMBER_OF_PLAYERS
+    global HUMAN_TILES
+    global COMPUTER_TILES
+
+    global PLAYED_TILES
+
+    global REPLAY_BUTTON_PLACE
+    global EXIT_BUTTON_PLACE
+    global PASS_BUTTON_PLACE
+
+    global TOTAL_X
+    global TOTAL_Y
+
+    global this_is_first_DOWN_tile
+    global this_is_first_LEFT_tile
+    global this_is_first_UP_tile
+    global this_is_first_RIGHT_tile
+
+    global GAME_OVER
+
+    global BOTH_SIDES
+
+    global ARGUMENTATIVE_TILE
+    global ARGUMENTATIVE_RESULT
+
+    global PASS_BUTTON_STATUS
+
+
+    __PASS__ = 0
+    NUMBER_OF_PLAYERS = 2
+
+    HUMAN_TILES = []
+    COMPUTER_TILES = []
+
+    PLAYED_TILES = []
+
+    REPLAY_BUTTON_PLACE = [0, 0]
+    EXIT_BUTTON_PLACE = [0, 0]
+    PASS_BUTTON_PLACE = [0, 0]
+
+    TOTAL_X = {"left":0, "right":0}
+    TOTAL_Y = {"up":0, "down":0}
+
+    this_is_first_DOWN_tile = 1
+    this_is_first_LEFT_tile = 1
+    this_is_first_UP_tile = 1
+    this_is_first_RIGHT_tile = 1
+
+    GAME_OVER = 0
+
+    BOTH_SIDES = 0
+
+    ARGUMENTATIVE_TILE = None
+    ARGUMENTATIVE_RESULT = None
+
+    PASS_BUTTON_STATUS = 0
+    main()
 
 #----------------------------------------------------------------------------
 
