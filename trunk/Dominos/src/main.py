@@ -11,7 +11,7 @@ from Tile import *
 from os import path
 
 #------------------Constants----------------------
-main_window_resolution = (800, 600)
+main_window_resolution = (1024, 768)
 
 HIDE_TILE_COLOR = (140,95,22)
 
@@ -751,7 +751,24 @@ def computer_play(auto_player, screen):
 
         #If the human didn't say "PASS" last time, set __PASS__ to 1
         else :
+            ############
             __PASS__ = 1
+            
+            computer_note_x = main_window_resolution[0]/2 - 196
+            computer_note_y = main_window_resolution[1]/2 - 190
+            
+            computer_note_img = pygame.image.load("images/computer_passed.png")
+            clear_img = pygame.image.load("images/clear.png")
+            
+            note_sound = path.join('sounds','note.wav')
+            note_soundtrack = pygame.mixer.Sound(note_sound)
+            note_soundtrack.set_volume(0.9)
+            
+            note_soundtrack.play(0)
+            screen.blit(computer_note_img,(computer_note_x,computer_note_y))
+            pygame.display.update()
+            pygame.time.wait(2000)
+            screen.blit(clear_img,(computer_note_x,computer_note_y))
 
 
     #check if the human can't play.
@@ -1213,7 +1230,7 @@ def main():
     seticon('images/icon.png')
 
     #create the Main window
-    screen = pygame.display.set_mode(main_window_resolution,0, 32)
+    screen = pygame.display.set_mode(main_window_resolution,FULLSCREEN, 32)
     pygame.display.set_caption("Dominos!")
 
     #load the sound file
@@ -1228,7 +1245,14 @@ def main():
     #initialize the game
     initialize(screen)
     auto_player = computer(COMPUTER_TILES)
-
+#########################################################
+#    computer_note_x = main_window_resolution[0]/2 - 196
+#    #computer_note_y = main_window_resolution[1] - main_window_resolution[1]/4 -295
+#    computer_note_y = main_window_resolution[1]/2 - 190
+#    computer_note_img = pygame.image.load("images/computer_passed.png")
+#    
+#    screen.blit(computer_note_img,(computer_note_x,computer_note_y))
+#    
 #####################  MAIN LOOP  #######################
 
     while True:
@@ -1334,7 +1358,11 @@ def main():
                             ARGUMENTATIVE_TILE = tile
                             ARGUMENTATIVE_RESULT = result
                             left_or_right(screen)
-
+        
+        # hit escape to exit
+        if event.type == KEYDOWN:
+            if event.key == K_ESCAPE:
+                exit() 
 
         pygame.display.update()
 
