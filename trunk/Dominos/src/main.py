@@ -753,17 +753,17 @@ def computer_play(auto_player, screen):
         else :
             ############
             __PASS__ = 1
-            
+
             computer_note_x = main_window_resolution[0]/2 - 196
             computer_note_y = main_window_resolution[1]/2 - 190
-            
+
             computer_note_img = pygame.image.load("images/computer_passed.png")
             clear_img = pygame.image.load("images/clear.png")
-            
+
             note_sound = path.join('sounds','note.wav')
             note_soundtrack = pygame.mixer.Sound(note_sound)
             note_soundtrack.set_volume(0.9)
-            
+
             note_soundtrack.play(0)
             screen.blit(computer_note_img,(computer_note_x,computer_note_y))
             pygame.display.update()
@@ -1245,14 +1245,9 @@ def main():
     #initialize the game
     initialize(screen)
     auto_player = computer(COMPUTER_TILES)
-#########################################################
-#    computer_note_x = main_window_resolution[0]/2 - 196
-#    #computer_note_y = main_window_resolution[1] - main_window_resolution[1]/4 -295
-#    computer_note_y = main_window_resolution[1]/2 - 190
-#    computer_note_img = pygame.image.load("images/computer_passed.png")
-#    
-#    screen.blit(computer_note_img,(computer_note_x,computer_note_y))
-#    
+
+
+
 #####################  MAIN LOOP  #######################
 
     while True:
@@ -1358,11 +1353,11 @@ def main():
                             ARGUMENTATIVE_TILE = tile
                             ARGUMENTATIVE_RESULT = result
                             left_or_right(screen)
-        
+
         # hit escape to exit
         if event.type == KEYDOWN:
             if event.key == K_ESCAPE:
-                exit() 
+                exit()
 
         pygame.display.update()
 
