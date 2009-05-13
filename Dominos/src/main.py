@@ -52,11 +52,10 @@ PASS_BUTTON_STATUS = 0
 
 def seticon(iconname):
     """
-    give an iconname, a bitmap sized 32x32 pixels, black (0,0,0) will be alpha channel
-
-    the windowicon will be set to the bitmap, but the black pixels will be full alpha channel
-
-    can only be called once after pygame.init() and before somewindow = pygame.display.set_mode()
+    seticon(iconname)
+        give an iconname, a bitmap sized 32x32 pixels, black (0,0,0) will be alpha channel
+        the window icon will be set to the bitmap, but the black pixels will be full alpha channel
+        can only be called once after pygame.init() and before somewindow = pygame.display.set_mode()
     """
     icon=pygame.Surface((32,32))
     icon.set_colorkey((0,0,0))
@@ -88,14 +87,6 @@ def distribute_tiles(tiles_set, players_count):
         Takes a complete dominos list and returns a list of lists
         each list contains 7 tiles as Tuples.
         WARNING! "players_count" should be less than 4.
-
-        in this function we faced type of lists called list of lists
-        for more clarify i will put example
-        >>> count = 3
-        >>> list = [[] for x in range(count)]
-        >>> print list
-        [[], [], []]
-        this list were contain 3 lists each list for one player :D
     """
     #check the validity of the number of players
     if players_count > 4 :
@@ -118,7 +109,7 @@ def distribute_tiles(tiles_set, players_count):
 def draw_bg(screen):
     """
     draw_bg()
-        drawing the board background
+        drawing the board background, and all necessary buttons
     """
 
     #load all images
@@ -257,6 +248,16 @@ def clicked_on_tile(mouse_position, tile_position):
 #----------------------------------------------------------------------------
 
 def tile_check(tile):
+    '''
+    tile_check(tile)
+        this function takes a tile as a tuple and returns a list
+        of the tile in it's suitable state (as a tuple), and the position
+        where it should played in (as a string).
+        If the tile can be played on both sides, the returning list will
+        contain 4 items which are both states that the tile can have.
+        If this tile is the first tile to be played, this function will
+        return None.
+    '''
 
     right = 0
     left = 0
@@ -333,23 +334,6 @@ def play(tile, screen, place = None):
     play(tile, screen, place)
         this function takes a tile as a "tuple", display
         and a place ("left" or "right"). then draws the tile on the screen.
-
-        example for the x_position to the last tile played on the left
-        >>> b=[[(0,1),(100,200)],[(0,2),(300,400)],[(0,3),(500,600)]]
-        >>> print b[0][1][0]
-        100
-
-        example for the y_position to the last tile played on the left
-        >>> print b[0][1][1]
-        200
-
-        example for the x_position to the last tile played on the right
-        >>> print b[-1][1][0]
-        500
-
-        example for the y_position to the last tile played on the right
-        >>> print b[-1][1][1]
-        600
     """
 
     #Initialize the flag that determines the orientation of the tile
@@ -716,6 +700,11 @@ def play(tile, screen, place = None):
 #----------------------------------------------------------------------------
 
 def computer_play(auto_player, screen):
+    '''
+    computer_play(auto_player, screen)
+        this function takes an object from the Computer class and a display,
+        then it does all the necessary actions related to the computer player.
+    '''
 
     #identify __PASS__ as global variable
     global __PASS__
@@ -785,6 +774,11 @@ def computer_play(auto_player, screen):
 #----------------------------------------------------------------------------
 
 def human_play(tile, exact_tile, screen, position, auto_player):
+    '''
+    human_play(tile, exact_tile, screen, position, auto_player)
+        this function is responsible for all the actions that should be
+        taken when the human clicks on a suitable tile.
+    '''
 
     global __PASS__
 
@@ -833,18 +827,34 @@ def human_play(tile, exact_tile, screen, position, auto_player):
 #----------------------------------------------------------------------------
 
 def hide_tile(x, y, screen):
+    '''
+    hide_tile(x, y, screen)
+        this function takes the position of a tile, then it hides it
+        with the color defined on the global variable HIDE_TILE_COLOR.
+    '''
+
     hiding_rectangle = Rect(x, y, 34, 68)
     pygame.draw.rect(screen, HIDE_TILE_COLOR, hiding_rectangle)
 
 #----------------------------------------------------------------------------
 
 def clear_area(x, y, width, height, screen, fill_color):
+    '''
+    clear_area(x, y, width, height, screen, fill_color)
+        this function hides anything with your desired color.
+    '''
+
     hiding_rectangle = Rect(x, y, width, height)
     pygame.draw.rect(screen, fill_color, hiding_rectangle)
 
 #----------------------------------------------------------------------------
 
 def switch_pass_button(action, screen):
+    '''
+    switch_pass_button(action, screen)
+        switches the PASS button to "enabled", or "disabled", according
+        to the action that you pass to it "enable", or "disable".
+    '''
 
     #initialize the PASS_BUTTON_STATUS as global variable
     global PASS_BUTTON_STATUS
@@ -919,6 +929,12 @@ def human_has_suitable_tile():
 #----------------------------------------------------------------------------
 
 def left_or_right(screen):
+    '''
+    left_or_right(screen)
+        this function is called whenever the human clicks on a tile that can be
+        played on both sides, then it takes all the necessary actions like drawing
+        the two green arrows and switching the game to the BOTH_SIDES mode.
+    '''
 
     left_image = pygame.image.load("images/left.png")
     right_image = pygame.image.load("images/right.png")
@@ -950,6 +966,12 @@ def left_or_right(screen):
 #----------------------------------------------------------------------------
 
 def check_if_clicked_on_exit(screen, x, y, check_for_popup = 0):
+    '''
+    check_if_clicked_on_exit(screen, x, y, check_for_popup = 0)
+        this function checks if the human clicked on the "exit"
+        or "replay" buttons, then it takes the necessary actions
+        according to that.
+    '''
 
     #Checking whether the user clicked on the REPLAY button
     if x > REPLAY_BUTTON_PLACE[0] and x < (REPLAY_BUTTON_PLACE[0] + 81)\
@@ -1015,6 +1037,11 @@ def check_if_clicked_on_exit(screen, x, y, check_for_popup = 0):
 #----------------------------------------------------------------------------
 
 def check_if_clicked_on_pass(screen, auto_player, x, y):
+    '''
+    check_if_clicked_on_pass(screen, auto_player, x, y)
+        this function checks if the human clicked on the "PASS"
+        button, then it takes the necessary actions according to that.
+    '''
 
     global __PASS__
 
@@ -1074,6 +1101,11 @@ def check_if_clicked_on_pass(screen, auto_player, x, y):
 #----------------------------------------------------------------------------
 
 def score_count(WHOS_TILE):
+    '''
+    score_count(WHOS_TILE)
+        this function takes a "tiles list" and returns the score count.
+    '''
+
     tiles_length = len(WHOS_TILE)
     tiles_count = 0
     for i in range(0, tiles_length):
@@ -1084,6 +1116,12 @@ def score_count(WHOS_TILE):
 #----------------------------------------------------------------------------
 
 def END_GAME(screen):
+    '''
+    END_GAME(screen)
+        This function is called when the game ends.
+        It determines who has won and prints the suitable message
+        then it switches the game into the GAME_OVER mode.
+    '''
 
     #constructing game_over_bg designs
     game_over_bg = pygame.image.load("images/game_over_bg.png")
@@ -1148,6 +1186,11 @@ def END_GAME(screen):
 #----------------------------------------------------------------------------
 
 def RESET_GAME():
+    '''
+    RESET_GAME()
+        Resets all game counters and flags, redistribute new tiles
+        to all players and redraw everything on the screen.
+    '''
 
     global __PASS__
     global NUMBER_OF_PLAYERS
@@ -1211,6 +1254,10 @@ def RESET_GAME():
 #----------------------------------------------------------------------------
 
 def main():
+    '''
+    main()
+        the main Dominos function. Initializes the game and starts the main game loop.
+    '''
 
     #identify the global variables
     global __PASS__
