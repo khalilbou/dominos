@@ -3,51 +3,13 @@
 #------------------IMPORTS------------------------
 import pygame
 from pygame.locals import *
-from random import randrange
 from sys import exit
 from time import sleep
 from computer import *
 from Tile import *
 from os import path
-
-#------------------Constants----------------------
-main_window_resolution = (1024, 768)
-
-HIDE_TILE_COLOR = (140,95,22)
-
-INNER_COLOR = (159, 127, 87)
-OUTER_COLOR = (109, 72, 31)
-
-#-------------------Variables--------------------------
-__PASS__ = 0
-NUMBER_OF_PLAYERS = 2
-
-HUMAN_TILES = []
-COMPUTER_TILES = []
-
-PLAYED_TILES = []
-
-REPLAY_BUTTON_PLACE = [0, 0]
-EXIT_BUTTON_PLACE = [0, 0]
-PASS_BUTTON_PLACE = [0, 0]
-
-TOTAL_X = {"left":0, "right":0}
-TOTAL_Y = {"up":0, "down":0}
-
-this_is_first_DOWN_tile = 1
-this_is_first_LEFT_tile = 1
-this_is_first_UP_tile = 1
-this_is_first_RIGHT_tile = 1
-
-GAME_OVER = 0
-
-BOTH_SIDES = 0
-
-ARGUMENTATIVE_TILE = None
-ARGUMENTATIVE_RESULT = None
-
-PASS_BUTTON_STATUS = 0
-
+from VariablesAndConstants import *
+from GenerateAndDistribute import *
 #----------------------------------------------------------------------------
 
 def seticon(iconname):
@@ -64,45 +26,6 @@ def seticon(iconname):
         for j in range(0,32):
             icon.set_at((i,j), rawicon.get_at((i,j)))
     pygame.display.set_icon(icon)
-
-#----------------------------------------------------------------------------
-
-def generate_tiles():
-    """ generate_tiles()
-        this function takes nothing and returns a complete dominos list of 28 elements
-    each element of this list is a "tuple".
-    """
-    # TODO (DONE) make two loops instead of this mess :D
-    temp = []
-    for i in range(0,7):
-        for j in range(i,7):
-            temp.append((i,j))
-    return temp
-
-#----------------------------------------------------------------------------
-
-def distribute_tiles(tiles_set, players_count):
-    """
-    distribute_tiles(tiles_set, players_count)
-        Takes a complete dominos list and returns a list of lists
-        each list contains 7 tiles as Tuples.
-        WARNING! "players_count" should be less than 4.
-    """
-    #check the validity of the number of players
-    if players_count > 4 :
-        raise ValueError
-
-    #create an empty list of lists, to hold the players' tiles
-    final_list=[ [] for x in range(players_count) ]
-
-    #fill the "final_list" with random tiles
-    for i in range(0, 7):
-        for j in range(players_count):
-            random_number = randrange(0, len(tiles_set))
-            # TODO (DONE) use the 'pop' method instead of the following active two lines
-            final_list[j].append(tiles_set.pop(random_number))
-
-    return final_list
 
 #----------------------------------------------------------------------------
 
